@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NULL VECTOR — nullvector.monster</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@300;400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #020406;
+  --panel: #070a0f;
+  --panel2: #0a0e16;
+  --border: #121a28;
+  --border-hi: #1c2a40;
+  --green: #00ff88;
+  --green-lo: rgba(0,255,136,0.07);
+  --green-glow: rgba(0,255,136,0.18);
+  --cyan: #00cfff;
+  --red: #ff2244;
+  --amber: #ffaa00;
+  --purple: #b366ff;
+  --white: #dde6f4;
+  --muted: #44566a;
+  --ghost: #16202e;
+  --mono: 'IBM Plex Mono', monospace;
+  --display: 'Bebas Neue', sans-serif;
+  --ui: 'Share Tech Mono', monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--white);font-family:var(--mono);overflow-x:hidden;cursor:crosshair;}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.06) 3px,rgba(0,0,0,0.06) 4px);pointer-events:none;z-index:9000;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:999;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:52px;background:rgba(2,4,6,0.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);overflow:hidden;}
+.logo{font-family:var(--display);font-size:22px;letter-spacing:5px;color:var(--green);text-shadow:0 0 20px var(--green-glow);text-decoration:none;display:flex;align-items:center;gap:0;line-height:1;white-space:nowrap;}
+.logo-sub{font-family:var(--ui);font-size:7px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-left:14px;border-left:1px solid var(--border-hi);padding-left:14px;line-height:1.3;max-width:100px;}
+.logo .monster-tld{color:var(--red);text-shadow:0 0 16px rgba(255,34,68,0.4);}
+.nav-r{display:flex;align-items:center;gap:24px;}
+.nav-r a{font-family:var(--ui);font-size:9px;letter-spacing:2px;color:var(--muted);text-decoration:none;text-transform:uppercase;transition:color .2s;}
+.nav-r a:hover{color:var(--green);}
+.start-btn{font-family:var(--ui);font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:7px 16px;border:1px solid var(--green);color:var(--green);background:transparent;cursor:crosshair;text-decoration:none;transition:all .2s;}
+.start-btn:hover{background:var(--green);color:var(--bg);box-shadow:0 0 24px var(--green-glow);}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:100px 40px 64px;position:relative;overflow:hidden;}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:52px 52px;opacity:.2;}
+.hero-orb{position:absolute;top:10%;right:0;width:700px;height:700px;background:radial-gradient(circle,rgba(0,255,136,.03) 0%,transparent 60%);pointer-events:none;}
+.hero-orb2{position:absolute;bottom:10%;left:-100px;width:500px;height:500px;background:radial-gradient(circle,rgba(179,102,255,.025) 0%,transparent 60%);pointer-events:none;}
+
+.eyebrow{font-family:var(--ui);font-size:9px;letter-spacing:4px;color:var(--green);text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;gap:10px;}
+.eyebrow::before{content:'';width:28px;height:1px;background:var(--green);}
+
+.h1{font-family:var(--display);font-size:clamp(88px,13vw,172px);line-height:.86;letter-spacing:5px;position:relative;z-index:1;}
+.h1 .dim{color:var(--ghost);}
+.h1 .g{color:var(--green);text-shadow:0 0 60px rgba(0,255,136,.3);}
+
+.domain-line{font-family:var(--display);font-size:clamp(16px,2vw,26px);letter-spacing:8px;color:var(--muted);margin:10px 0 28px;z-index:1;position:relative;}
+.domain-line .tld{color:var(--red);letter-spacing:6px;}
+
+.hero-desc{max-width:500px;font-size:12px;line-height:1.9;color:var(--muted);border-left:2px solid var(--green);padding-left:16px;margin-bottom:36px;position:relative;z-index:1;}
+.hero-desc strong{color:var(--white);}
+
+/* stats */
+.stats{display:flex;gap:0;margin-bottom:36px;position:relative;z-index:1;border:1px solid var(--border);width:fit-content;}
+.stat{padding:18px 24px;display:flex;flex-direction:column;gap:3px;border-right:1px solid var(--border);}
+.stat:last-child{border-right:none;}
+.sn{font-family:var(--display);font-size:44px;color:var(--green);line-height:1;text-shadow:0 0 18px rgba(0,255,136,.2);}
+.sl{font-family:var(--ui);font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+
+.btns{display:flex;gap:10px;position:relative;z-index:1;}
+.btn-p{font-family:var(--ui);font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:13px 32px;background:var(--green);color:var(--bg);border:none;cursor:crosshair;text-decoration:none;font-weight:600;transition:all .2s;}
+.btn-p:hover{box-shadow:0 0 32px rgba(0,255,136,.4);}
+.btn-s{font-family:var(--ui);font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:13px 32px;background:transparent;color:var(--muted);border:1px solid var(--border-hi);cursor:crosshair;text-decoration:none;transition:all .2s;}
+.btn-s:hover{border-color:var(--cyan);color:var(--cyan);}
+
+/* ticker */
+.ticker{position:absolute;bottom:0;left:0;right:0;height:30px;background:var(--panel);border-top:1px solid var(--border);display:flex;align-items:center;overflow:hidden;}
+.tlabel{font-family:var(--ui);font-size:8px;letter-spacing:2px;color:var(--green);padding:0 12px;border-right:1px solid var(--border);height:100%;display:flex;align-items:center;white-space:nowrap;}
+.ttrack{display:flex;gap:44px;animation:tscroll 32s linear infinite;white-space:nowrap;padding-left:20px;}
+.titem{font-family:var(--ui);font-size:8px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
+.titem span{color:var(--cyan);margin-right:5px;}
+@keyframes tscroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ALARM */
+.alarm{background:var(--panel);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:20px 40px;display:flex;align-items:center;gap:18px;position:relative;overflow:hidden;}
+.alarm::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(-45deg,transparent,transparent 8px,rgba(255,34,68,.02) 8px,rgba(255,34,68,.02) 16px);}
+.alarm-icon{font-family:var(--display);font-size:32px;color:var(--red);text-shadow:0 0 12px rgba(255,34,68,.5);flex-shrink:0;line-height:1;}
+.alarm-text{font-size:11px;line-height:1.7;color:var(--muted);position:relative;}
+.alarm-text strong{color:var(--red);}
+
+/* SECTIONS */
+section{padding:72px 40px;position:relative;}
+.stag{font-family:var(--ui);font-size:8px;letter-spacing:4px;text-transform:uppercase;color:var(--green);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.stag::before{content:'//';color:var(--muted);}
+.sh{font-family:var(--display);font-size:clamp(32px,4.5vw,58px);letter-spacing:3px;color:#fff;margin-bottom:10px;line-height:1;}
+.sh .g{color:var(--green);}
+.sh .r{color:var(--red);}
+.sh .p{color:var(--purple);}
+.ssub{font-size:11px;color:var(--muted);line-height:1.8;max-width:520px;margin-bottom:48px;}
+
+/* ── TIER SYSTEM ── */
+.tier-intro{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;background:var(--border);margin-bottom:48px;}
+.tier-card{padding:32px 28px;position:relative;overflow:hidden;}
+.tier-card.t-standard{background:var(--panel);}
+.tier-card.t-advanced{background:var(--panel2);border-top:2px solid var(--cyan);}
+.tier-card.t-monster{background:#0c0810;border-top:2px solid var(--red);}
+.tier-tag{font-family:var(--ui);font-size:8px;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;}
+.tier-tag.std{color:var(--green);}
+.tier-tag.adv{color:var(--cyan);}
+.tier-tag.mon{color:var(--red);}
+.tier-name{font-family:var(--display);font-size:36px;letter-spacing:3px;color:#fff;margin-bottom:8px;line-height:1;}
+.tier-name.monster-name{color:var(--red);text-shadow:0 0 24px rgba(255,34,68,.3);}
+.tier-sub{font-size:10px;line-height:1.7;color:var(--muted);margin-bottom:16px;}
+.tier-milestones{display:flex;flex-direction:column;gap:5px;}
+.tm{font-family:var(--ui);font-size:9px;letter-spacing:1px;color:var(--muted);display:flex;align-items:center;gap:8px;}
+.tm::before{content:'→';color:var(--green);flex-shrink:0;}
+.tm.adv-tm::before{color:var(--cyan);}
+.tm.mon-tm::before{color:var(--red);}
+.monster-badge{
+  display:inline-flex;align-items:center;gap:6px;margin-top:16px;
+  font-family:var(--ui);font-size:8px;letter-spacing:2px;text-transform:uppercase;
+  padding:6px 12px;border:1px solid rgba(255,34,68,.4);color:var(--red);
+  background:rgba(255,34,68,.05);
+}
+.monster-bg-text{position:absolute;bottom:-20px;right:-10px;font-family:var(--display);font-size:100px;color:rgba(255,34,68,.04);line-height:1;pointer-events:none;letter-spacing:0;}
+
+/* PHASE LIST */
+.phase-list{display:flex;flex-direction:column;gap:2px;background:var(--border);}
+.phase{background:var(--panel);display:grid;grid-template-columns:70px 1fr 260px;gap:0;align-items:stretch;position:relative;overflow:hidden;transition:background .25s;}
+.phase::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--green);transform:scaleY(0);transform-origin:top;transition:transform .35s ease;}
+.phase:hover{background:#09101a;}
+.phase:hover::before{transform:scaleY(1);}
+.phase-n{display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:48px;color:var(--ghost);border-right:1px solid var(--border);padding:24px 0;letter-spacing:2px;transition:color .3s;}
+.phase:hover .phase-n{color:rgba(0,255,136,.12);}
+.phase-body{padding:24px 28px;}
+.phase-head{display:flex;align-items:baseline;gap:14px;margin-bottom:6px;}
+.phase-days{font-family:var(--ui);font-size:8px;letter-spacing:3px;color:var(--green);text-transform:uppercase;}
+.phase-title{font-family:var(--display);font-size:20px;letter-spacing:2px;color:#fff;}
+.phase-desc{font-size:10px;line-height:1.78;color:var(--muted);margin-bottom:12px;max-width:600px;}
+.tags{display:flex;flex-wrap:wrap;gap:4px;}
+.tag-pill{font-family:var(--ui);font-size:7px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border:1px solid var(--border-hi);color:var(--muted);transition:all .25s;}
+.phase:hover .tag-pill{border-color:rgba(0,255,136,.2);color:rgba(0,255,136,.65);}
+
+/* MILESTONE PANEL */
+.ms-col{width:260px;border-left:1px solid var(--border);padding:20px;display:flex;flex-direction:column;justify-content:center;gap:8px;flex-shrink:0;}
+.ms-label{font-family:var(--ui);font-size:7px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.ms-badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--ui);font-size:7px;letter-spacing:2px;text-transform:uppercase;padding:4px 9px;border:1px solid;width:fit-content;}
+.badge-cert{border-color:rgba(0,207,255,.35);color:var(--cyan);}
+.badge-deploy{border-color:rgba(0,255,136,.35);color:var(--green);}
+.badge-build{border-color:rgba(255,170,0,.35);color:var(--amber);}
+.badge-monster{border-color:rgba(255,34,68,.5);color:var(--red);background:rgba(255,34,68,.06);}
+.ms-title{font-family:var(--display);font-size:15px;letter-spacing:1px;color:#fff;line-height:1.2;}
+.ms-verify{font-family:var(--ui);font-size:8px;letter-spacing:.5px;color:var(--muted);line-height:1.6;}
+/* monster phase */
+.phase.monster-phase{background:#0c0810;}
+.phase.monster-phase::before{background:var(--red);}
+.phase.monster-phase:hover{background:#100812;}
+.phase.monster-phase .phase-n{color:rgba(255,34,68,.08);}
+.phase.monster-phase:hover .phase-n{color:rgba(255,34,68,.15);}
+.phase.monster-phase .phase-days{color:var(--red);}
+.phase.monster-phase:hover .tag-pill{border-color:rgba(255,34,68,.25);color:rgba(255,34,68,.7);}
+.monster-header-strip{background:#100812;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:10px 40px;display:flex;align-items:center;gap:12px;}
+.monster-strip-label{font-family:var(--ui);font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--red);display:flex;align-items:center;gap:8px;}
+.monster-strip-label::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--red);animation:blink 1s step-end infinite;}
+.monster-strip-desc{font-family:var(--ui);font-size:8px;letter-spacing:1px;color:var(--muted);}
+
+/* DAILY */
+.daily-strip{background:var(--panel);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:64px 40px;}
+.daily-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:var(--border);margin-bottom:40px;}
+.dblock{background:var(--bg);padding:24px 20px;}
+.dtime{font-family:var(--display);font-size:38px;color:var(--green);line-height:1;margin-bottom:2px;text-shadow:0 0 12px rgba(0,255,136,.2);}
+.dunit{font-family:var(--ui);font-size:7px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.dtitle{font-family:var(--ui);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#fff;margin-bottom:6px;}
+.ddesc{font-size:9px;line-height:1.7;color:var(--muted);}
+
+/* terminal */
+.term{background:var(--bg);border:1px solid var(--border);border-top:2px solid var(--green);padding:24px;max-width:660px;}
+.tbar{display:flex;gap:6px;margin-bottom:18px;align-items:center;}
+.dot{width:8px;height:8px;border-radius:50%;}
+.dot-r{background:#ff2244;}.dot-a{background:#ffaa00;}.dot-g{background:#00ff88;}
+.ttitle{font-family:var(--ui);font-size:8px;letter-spacing:2px;color:var(--muted);margin-left:auto;text-transform:uppercase;}
+.tl{display:block;font-family:var(--ui);font-size:10px;line-height:1.95;}
+.tp{color:var(--green);}.tc{color:#fff;}.to{color:var(--muted);padding-left:12px;}
+.tg{color:var(--green);}.tcn{color:var(--cyan);}.tr{color:var(--red);}.ta{color:var(--amber);}.tp2{color:var(--purple);}
+.cur{display:inline-block;width:6px;height:12px;background:var(--green);animation:blink 1s step-end infinite;vertical-align:middle;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* OUTCOMES */
+.outcomes-wrap{display:flex;flex-direction:column;gap:2px;background:var(--border);}
+.oc-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;background:var(--border);}
+.oc{background:var(--panel);padding:32px 26px;position:relative;overflow:hidden;}
+.oc.monster-oc{background:#0c0810;}
+.oc::after{content:attr(data-n);position:absolute;bottom:-22px;right:-6px;font-family:var(--display);font-size:100px;color:var(--ghost);opacity:.5;line-height:1;pointer-events:none;}
+.oc.monster-oc::after{color:rgba(255,34,68,.04);}
+.oc-label{font-family:var(--ui);font-size:7px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.oc-label.monster-label{color:var(--red);}
+.oc-title{font-family:var(--display);font-size:18px;letter-spacing:2px;color:#fff;margin-bottom:8px;line-height:1.1;position:relative;z-index:1;}
+.oc-title.monster-title{color:var(--red);}
+.oc-desc{font-size:9px;line-height:1.75;color:var(--muted);position:relative;z-index:1;}
+
+/* monster outcomes full-row */
+.oc-monster-row{background:#0c0810;border-top:1px solid rgba(255,34,68,.2);display:grid;grid-template-columns:200px 1fr;gap:0;}
+.omr-label{padding:32px 28px;border-right:1px solid rgba(255,34,68,.15);display:flex;flex-direction:column;justify-content:center;gap:8px;}
+.omr-tag{font-family:var(--ui);font-size:7px;letter-spacing:3px;text-transform:uppercase;color:var(--red);}
+.omr-name{font-family:var(--display);font-size:32px;color:var(--red);letter-spacing:3px;line-height:1;text-shadow:0 0 20px rgba(255,34,68,.25);}
+.omr-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;background:rgba(255,34,68,.08);}
+.omr-item{background:#0c0810;padding:24px 20px;}
+.omr-item-title{font-family:var(--display);font-size:15px;letter-spacing:1px;color:#fff;margin-bottom:6px;line-height:1.1;}
+.omr-item-desc{font-size:9px;line-height:1.7;color:var(--muted);}
+
+/* RULES */
+.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--border);}
+.rule{background:var(--panel);padding:24px 22px;display:flex;gap:14px;}
+.rn{font-family:var(--display);font-size:28px;color:var(--ghost);line-height:1;flex-shrink:0;width:32px;}
+.rt{font-family:var(--ui);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--green);margin-bottom:5px;}
+.rd{font-size:9px;line-height:1.7;color:var(--muted);}
+
+/* CTA */
+.cta{background:var(--panel);border-top:1px solid var(--border);padding:72px 40px;text-align:center;position:relative;overflow:hidden;}
+.cta::before{content:'nullvector.monster';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--display);font-size:10vw;color:rgba(0,255,136,.012);letter-spacing:8px;white-space:nowrap;pointer-events:none;}
+.form-row{display:flex;max-width:420px;margin:0 auto 10px;}
+.email-in{flex:1;background:var(--bg);border:1px solid var(--border-hi);border-right:none;padding:13px 16px;font-family:var(--ui);font-size:10px;color:var(--white);letter-spacing:1px;outline:none;}
+.email-in:focus{border-color:var(--green);}
+.email-in::placeholder{color:var(--muted);}
+.cnote{font-family:var(--ui);font-size:8px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
+
+/* FOOTER */
+footer{padding:28px 40px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.fl{font-family:var(--display);font-size:18px;letter-spacing:4px;color:var(--green);}
+.fl .tld{color:var(--red);}
+.fc{font-family:var(--ui);font-size:8px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
+.flinks{display:flex;gap:18px;}
+.flinks a{font-family:var(--ui);font-size:8px;letter-spacing:2px;color:var(--muted);text-decoration:none;text-transform:uppercase;transition:color .2s;}
+.flinks a:hover{color:var(--green);}
+
+/* live */
+.live{display:inline-flex;align-items:center;gap:5px;font-family:var(--ui);font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--red);border:1px solid rgba(255,34,68,.3);padding:3px 9px;margin-bottom:24px;}
+.ldot{width:5px;height:5px;border-radius:50%;background:var(--red);animation:blink 1s step-end infinite;}
+
+/* scroll hint */
+.scroll-hint{position:absolute;bottom:40px;left:40px;display:flex;align-items:center;gap:10px;font-family:var(--ui);font-size:8px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;opacity:0;animation:fup .6s ease forwards 1.4s;}
+.sline{width:1px;height:32px;background:linear-gradient(to bottom,var(--green),transparent);}
+@keyframes fup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* divider */
+.hdiv{height:1px;background:var(--border);margin:0 40px;}
+
+/* MISSION */
+.mission{
+  padding:80px 40px;
+  background:var(--bg);
+  border-bottom:1px solid var(--border);
+  position:relative;
+  overflow:hidden;
+  display:grid;
+  grid-template-columns:1fr 2fr;
+  gap:64px;
+  align-items:center;
+}
+.mission::before{
+  content:'WHY';
+  position:absolute;
+  right:-20px;top:50%;transform:translateY(-50%);
+  font-family:var(--display);
+  font-size:220px;
+  color:rgba(0,255,136,0.02);
+  letter-spacing:0;
+  line-height:1;
+  pointer-events:none;
+}
+.mission-left{}
+.mission-label{
+  font-family:var(--ui);font-size:8px;letter-spacing:4px;
+  text-transform:uppercase;color:var(--green);
+  margin-bottom:16px;display:flex;align-items:center;gap:8px;
+}
+.mission-label::before{content:'//';color:var(--muted);}
+.mission-title{
+  font-family:var(--display);font-size:clamp(40px,5vw,64px);
+  letter-spacing:3px;color:#fff;line-height:.95;
+}
+.mission-title .g{color:var(--green);}
+.mission-right{}
+.mission-statement{
+  font-size:17px;
+  line-height:1.85;
+  color:var(--white);
+  font-family:var(--mono);
+  font-weight:300;
+  position:relative;
+  z-index:1;
+}
+.mission-statement .hl{color:var(--green);font-weight:600;}
+.mission-statement .hl-r{color:var(--red);font-weight:400;}
+.mission-rule{
+  width:48px;height:2px;
+  background:linear-gradient(to right,var(--green),transparent);
+  margin:28px 0;
+}
+.mission-sub{
+  font-family:var(--ui);font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--muted);line-height:1.8;
+  border-left:1px solid var(--border-hi);padding-left:16px;
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="logo">NULL<span style="color:var(--muted)">VECTOR</span><span class="monster-tld">.monster</span><span class="logo-sub">147-Day AI Gauntlet</span></a>
+  <div class="nav-r">
+    <a href="#mission">Mission</a>
+    <a href="#tiers">Tiers</a>
+    <a href="#phases">Phases</a>
+    <a href="#outcomes">Outcomes</a>
+    <a href="#start" class="start-btn">Start →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-grid"></div>
+  <div class="hero-orb"></div>
+  <div class="hero-orb2"></div>
+
+  <div class="live"><div class="ldot"></div>Cohort 01 — Open Now</div>
+
+  <div class="eyebrow">147-Day AI Gauntlet // Zero to LLM Engineer</div>
+
+  <h1 class="h1">
+    <span class="dim">NULL</span><br>
+    <span class="g">VECTOR</span>
+  </h1>
+
+  <div class="domain-line">nullvector<span class="tld">.monster</span></div>
+
+  <p class="hero-desc">
+    You know nothing about AI. In <strong>147 days — 7 phases of 21 days each</strong> — you will build and ship real AI products, earn real cloud certifications, and implement a transformer architecture from scratch. Every phase ends with a verifiable milestone. <strong>Not a score. Not a badge. Proof an employer can click on.</strong> Choose your tier. The Monster tier is not for everyone.
+  </p>
+
+  <div class="stats">
+    <div class="stat"><div class="sn">147</div><div class="sl">Days</div></div>
+    <div class="stat"><div class="sn">7</div><div class="sl">Phases</div></div>
+    <div class="stat"><div class="sn">7+</div><div class="sl">Live Deployments</div></div>
+    <div class="stat"><div class="sn">5</div><div class="sl">Industry Certs</div></div>
+    <div class="stat"><div class="sn">3</div><div class="sl">Difficulty Tiers</div></div>
+  </div>
+
+  <div class="btns">
+    <a href="#start" class="btn-p">Start the Challenge →</a>
+    <a href="#tiers" class="btn-s">Choose Your Tier</a>
+  </div>
+
+  <div class="scroll-hint"><div class="sline"></div>Scroll</div>
+
+  <div class="ticker">
+    <div class="tlabel">// STACK</div>
+    <div style="overflow:hidden;flex:1;display:flex;">
+      <div class="ttrack">
+        <div class="titem"><span>→</span>Python · PyTorch · NumPy</div>
+        <div class="titem"><span>→</span>Transformers · Attention · Embeddings</div>
+        <div class="titem"><span>→</span>Fine-Tuning · LoRA · QLoRA · RLHF</div>
+        <div class="titem"><span>→</span>RAG · LangChain · LlamaIndex · MCP</div>
+        <div class="titem"><span>→</span>Agentic AI · Multi-Agent · Tool Use</div>
+        <div class="titem"><span>→</span>AWS ML · Azure AI · NVIDIA NCA</div>
+        <div class="titem"><span>→</span>MLOps · Docker · CI/CD · Monitoring</div>
+        <div class="titem"><span>→</span>Pre-training · Distributed Training · FSDP</div>
+        <div class="titem"><span>→</span>Research Papers · Custom Architectures</div>
+        <div class="titem"><span>→</span>Python · PyTorch · NumPy</div>
+        <div class="titem"><span>→</span>Transformers · Attention · Embeddings</div>
+        <div class="titem"><span>→</span>Fine-Tuning · LoRA · QLoRA · RLHF</div>
+        <div class="titem"><span>→</span>RAG · LangChain · LlamaIndex · MCP</div>
+        <div class="titem"><span>→</span>Agentic AI · Multi-Agent · Tool Use</div>
+        <div class="titem"><span>→</span>AWS ML · Azure AI · NVIDIA NCA</div>
+        <div class="titem"><span>→</span>MLOps · Docker · CI/CD · Monitoring</div>
+        <div class="titem"><span>→</span>Pre-training · Distributed Training · FSDP</div>
+        <div class="titem"><span>→</span>Research Papers · Custom Architectures</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ALARM -->
+<div class="alarm">
+  <div class="alarm-icon">!</div>
+  <div class="alarm-text">
+    <strong>THIS IS NOT A COURSE.</strong> Every 21 days you produce something a hiring manager can verify with a URL, a credential number, or a GitHub repo. No milestone = restart that phase. The challenge does not negotiate. Neither do AI companies.
+  </div>
+</div>
+
+<!-- MISSION -->
+<div class="mission" id="mission">
+  <div class="mission-left">
+    <div class="mission-label">Our Mission</div>
+    <h2 class="mission-title">THE<br><span class="g">WHY</span><br>BEHIND<br>ALL OF IT</h2>
+  </div>
+  <div class="mission-right">
+    <p class="mission-statement">
+      The more people who understand AI, the more <span class="hl">problems get solved.</span> The more problems that get solved, the better <span class="hl">people's lives become.</span> It is that simple and that serious. NULL VECTOR exists to put this technology in the hands of as many people as possible — not as consumers, <span class="hl">but as builders.</span> Because builders are the ones who change things.
+    </p>
+    <div class="mission-rule"></div>
+    <div class="mission-sub">
+      AI built by people who care about people is the difference between<br>
+      technology that extracts value and technology that creates it.<br>
+      Every person who completes this challenge is one more person<br>
+      capable of making something better — for a community, a family,<br>
+      a stranger, a problem that has been waiting too long for someone<br>
+      with the right tools to arrive.
+    </div>
+  </div>
+</div>
+
+<!-- TIER SYSTEM -->
+<section id="tiers" style="background:var(--panel);border-bottom:1px solid var(--border);">
+  <div class="stag">Choose Your Path</div>
+  <h2 class="sh">THREE <span class="g">TIERS.</span><br>ONE <span class="r">MONSTER.</span></h2>
+  <p class="ssub">All three tiers follow the same 7-phase, 147-day structure. The tier you choose determines the depth of your milestones, the complexity of what you build, and whether you come out the other side job-ready or frontier-ready.</p>
+
+  <div class="tier-intro">
+    <!-- STANDARD -->
+    <div class="tier-card t-standard">
+      <div class="tier-tag std">// Tier 01</div>
+      <div class="tier-name">STANDARD</div>
+      <div class="tier-sub">You complete all 7 phases, earn 3 cloud certs, deploy 7 working AI applications, and finish with a portfolio strong enough to interview at mid-market AI companies. The right choice if you are starting from absolute zero and want a clear, achievable path.</div>
+      <div class="tier-milestones">
+        <div class="tm">Azure AI-900 cert by Day 21</div>
+        <div class="tm">Live ML app deployed by Day 42</div>
+        <div class="tm">NVIDIA NCA-AIIO cert by Day 63</div>
+        <div class="tm">Mini-LLM trained & deployed by Day 84</div>
+        <div class="tm">AWS ML Specialty cert by Day 105</div>
+        <div class="tm">Autonomous agent deployed by Day 126</div>
+        <div class="tm">Azure AI-102 + 10 applications by Day 147</div>
+      </div>
+    </div>
+
+    <!-- ADVANCED -->
+    <div class="tier-card t-advanced">
+      <div class="tier-tag adv">// Tier 02</div>
+      <div class="tier-name">ADVANCED</div>
+      <div class="tier-sub">Everything in Standard, plus research paper implementations, published open-source contributions, and a fine-tuned model released publicly on HuggingFace with documented evals. You finish ready to interview at frontier AI labs for junior research engineer roles.</div>
+      <div class="tier-milestones">
+        <div class="tm adv-tm">All Standard milestones</div>
+        <div class="tm adv-tm">Implement one research paper per phase</div>
+        <div class="tm adv-tm">Public HuggingFace model with eval results</div>
+        <div class="tm adv-tm">Open-source contribution merged to a major repo</div>
+        <div class="tm adv-tm">Technical blog with 3 published deep-dive posts</div>
+        <div class="tm adv-tm">Google Professional ML Engineer cert</div>
+        <div class="tm adv-tm">Apply to frontier labs — Anthropic, OpenAI, Mistral</div>
+      </div>
+    </div>
+
+    <!-- MONSTER -->
+    <div class="tier-card t-monster">
+      <div class="monster-bg-text">M</div>
+      <div class="tier-tag mon">// Tier 03</div>
+      <div class="tier-name monster-name">MONSTER</div>
+      <div class="tier-sub">Everything in Advanced, plus you pre-train a small language model from scratch on custom data, build a multi-modal system, write and submit an original research paper to arXiv, and launch a product or company using your own AI infrastructure. Not survivable by most people. That is the point.</div>
+      <div class="tier-milestones">
+        <div class="tm mon-tm">All Advanced milestones</div>
+        <div class="tm mon-tm">Pre-train a 125M+ parameter model from scratch</div>
+        <div class="tm mon-tm">Multi-modal system (vision + language)</div>
+        <div class="tm mon-tm">Original paper published to arXiv</div>
+        <div class="tm mon-tm">NVIDIA NCA-GENL + NCA-GENM certs</div>
+        <div class="tm mon-tm">Launch a live AI product with real users</div>
+        <div class="tm mon-tm">Apply to AI research scientist roles</div>
+      </div>
+      <div class="monster-badge">⬡ nullvector.monster exclusive</div>
+    </div>
+  </div>
+</section>
+
+<!-- PHASES -->
+<section id="phases">
+  <div class="stag">7 Phases // 21 Days Each</div>
+  <h2 class="sh">THE <span class="g">GAUNTLET</span></h2>
+  <p class="ssub">Milestone column shows Standard tier. Advanced and Monster tiers stack additional requirements on top of every phase. No phase is optional. No phase has a day off.</p>
+
+  <div class="phase-list">
+
+    <div class="phase">
+      <div class="phase-n">01</div>
+      <div class="phase-body">
+        <div class="phase-head"><div class="phase-days">Days 1–21</div><div class="phase-title">IGNITION — Python & Math Core</div></div>
+        <div class="phase-desc">Start from zero. Python fundamentals, NumPy, Pandas, Matplotlib, linear algebra, and calculus intuition. You commit code to GitHub every single day. By Day 21 you can manipulate data, write functions, and reason about the math underpinning every AI model. CS50x and your Packt Python book run in parallel.</div>
+        <div class="tags"><span class="tag-pill">Python</span><span class="tag-pill">NumPy</span><span class="tag-pill">Pandas</span><span class="tag-pill">Linear Algebra</span><span class="tag-pill">Calculus Basics</span><span class="tag-pill">Git & CLI</span></div>
+      </div>
+      <div class="ms-col">
+        <div class="ms-label">Day 21 Milestone</div>
+        <div class="ms-badge badge-cert">⬡ Azure AI-900</div>
+        <div class="ms-title">Microsoft Azure AI Fundamentals</div>
+        <div class="ms-verify">Pass the AI-900 exam. Credential number is your proof. ~$165 exam fee. Study materials in your Humble Bundle library. Miss it — restart Phase 01.</div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-n">02</div>
+      <div class="phase-body">
+        <div class="phase-head"><div class="phase-days">Days 22–42</div><div class="phase-title">SIGNAL — Classical Machine Learning</div></div>
+        <div class="phase-desc">Supervised and unsupervised learning, gradient descent, regularization, Scikit-Learn, and your first PyTorch models. You build 5 ML models from scratch — no black boxes. Every parameter has a reason. Phase ends with a working, publicly accessible web application, not a notebook.</div>
+        <div class="tags"><span class="tag-pill">Scikit-Learn</span><span class="tag-pill">PyTorch Intro</span><span class="tag-pill">Regression</span><span class="tag-pill">Classification</span><span class="tag-pill">Gradient Descent</span><span class="tag-pill">Cross-Validation</span></div>
+      </div>
+      <div class="ms-col">
+        <div class="ms-label">Day 42 Milestone</div>
+        <div class="ms-badge badge-deploy">⬡ Live ML App</div>
+        <div class="ms-title">Deployed ML Classifier</div>
+        <div class="ms-verify">Working ML web app on HuggingFace Spaces — public URL, real input, real predictions. Not a notebook. A product anyone can use right now.</div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-n">03</div>
+      <div class="phase-body">
+        <div class="phase-head"><div class="phase-days">Days 43–63</div><div class="phase-title">DEPTH — Deep Learning & Neural Networks</div></div>
+        <div class="phase-desc">CNNs, RNNs, LSTMs. Backpropagation implemented by hand — you derive the gradients yourself before using autograd. fast.ai runs parallel so you build top-down and bottom-up simultaneously. GPU training, model debugging, and evaluation. By Day 63 you understand why GPT-4 having 1.7 trillion parameters matters.</div>
+        <div class="tags"><span class="tag-pill">PyTorch Advanced</span><span class="tag-pill">CNNs</span><span class="tag-pill">RNNs / LSTMs</span><span class="tag-pill">fast.ai</span><span class="tag-pill">GPU Training</span><span class="tag-pill">Backprop from Scratch</span></div>
+      </div>
+      <div class="ms-col">
+        <div class="ms-label">Day 63 Milestone</div>
+        <div class="ms-badge badge-cert">⬡ NVIDIA NCA-AIIO</div>
+        <div class="ms-title">NVIDIA AI Infrastructure Cert</div>
+        <div class="ms-verify">Pass NVIDIA Certified Associate: AI Infrastructure & Operations. Validates GPU compute, AI hardware stack, and deep learning infrastructure. Globally recognized hardware credential.</div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-n">04</div>
+      <div class="phase-body">
+        <div class="phase-head"><div class="phase-days">Days 64–84</div><div class="phase-title">TRANSFORMER — Attention & LLM Architecture</div></div>
+        <div class="phase-desc">You read "Attention Is All You Need." You implement multi-head self-attention from scratch — not using a library to do the hard parts. You build a mini-GPT that trains on real text and generates coherent output. Stanford CS224N lectures run parallel. This is the hardest phase. It is also the most important one.</div>
+        <div class="tags"><span class="tag-pill">Attention Mechanism</span><span class="tag-pill">Transformer Paper</span><span class="tag-pill">HuggingFace</span><span class="tag-pill">Tokenization</span><span class="tag-pill">Mini-GPT Build</span><span class="tag-pill">CS224N</span></div>
+      </div>
+      <div class="ms-col">
+        <div class="ms-label">Day 84 Milestone</div>
+        <div class="ms-badge badge-build">⬡ Working Mini-LLM</div>
+        <div class="ms-title">Train & Deploy a Language Model</div>
+        <div class="ms-verify">Small transformer trained on custom data, generating coherent text, deployed as a public demo. Full GitHub implementation — your code, your weights, no frameworks hiding the architecture.</div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-n">05</div>
+      <div class="phase-body">
+        <div class="phase-head"><div class="phase-days">Days 85–105</div><div class="phase-title">OPERATOR — Fine-Tuning, RAG & Production LLMs</div></div>
+        <div class="phase-desc">LoRA, QLoRA, instruction tuning, DPO, RLHF fundamentals. RAG pipelines with LlamaIndex and vector databases. You fine-tune an open-source LLM on a custom dataset and build a RAG system backed by real documents with measurable retrieval accuracy. Two full production deployments this phase.</div>
+        <div class="tags"><span class="tag-pill">LoRA / QLoRA</span><span class="tag-pill">Fine-Tuning</span><span class="tag-pill">DPO</span><span class="tag-pill">RAG</span><span class="tag-pill">LlamaIndex</span><span class="tag-pill">Vector DBs</span></div>
+      </div>
+      <div class="ms-col">
+        <div class="ms-label">Day 105 Milestone</div>
+        <div class="ms-badge badge-cert">⬡ AWS MLS-C01</div>
+        <div class="ms-title">AWS ML Specialty Cert</div>
+        <div class="ms-verify">The most employable ML cert on the market. Covers modeling, ML implementation, and AWS AI services. Validates everything in Phases 1–5. ~$300 exam fee. Non-negotiable milestone.</div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-n">06</div>
+      <div class="phase-body">
+        <div class="phase-head"><div class="phase-days">Days 106–126</div><div class="phase-title">AGENT — Autonomous AI Systems</div></div>
+        <div class="phase-desc">LangChain agentic loops, tool use, MCP protocol, multi-agent orchestration, n8n automation pipelines. You build a fully autonomous AI agent — it browses the web, writes and executes code, manages files, and completes multi-step tasks without human intervention. The fastest-growing specialization in AI hiring right now.</div>
+        <div class="tags"><span class="tag-pill">LangChain</span><span class="tag-pill">Agentic Loops</span><span class="tag-pill">MCP Protocol</span><span class="tag-pill">Tool Use</span><span class="tag-pill">n8n</span><span class="tag-pill">Multi-Agent Systems</span></div>
+      </div>
+      <div class="ms-col">
+        <div class="ms-label">Day 126 Milestone</div>
+        <div class="ms-badge badge-deploy">⬡ Public Agent App</div>
+        <div class="ms-title">Deployed Autonomous Agent</div>
+        <div class="ms-verify">Live autonomous AI agent with public URL. Real tool use, persistent memory, minimum 3 integrated tools. GitHub repo with architecture diagram. Demonstrable live in a 5-minute interview.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MONSTER PHASE DIVIDER -->
+  <div class="monster-header-strip" style="margin:0 -40px;">
+    <div class="monster-strip-label">Monster Phase Activated</div>
+    <div class="monster-strip-desc">// Phase 07 milestones escalate based on your chosen tier. Standard, Advanced, and Monster paths diverge here.</div>
+  </div>
+
+  <div class="phase-list" style="margin-top:2px;">
+    <div class="phase monster-phase">
+      <div class="phase-n">07</div>
+      <div class="phase-body">
+        <div class="phase-head"><div class="phase-days" style="color:var(--red);">Days 127–147</div><div class="phase-title">DEPLOYMENT — MLOps, Portfolio & Job Attack</div></div>
+        <div class="phase-desc">MLOps pipelines, Docker, CI/CD for ML, cloud deployment across AWS/Azure/GCP, model monitoring and drift detection. You package your best projects, write technical case studies, record demo videos, and execute a structured job campaign. The Monster tier adds: pre-training a full model, publishing to arXiv, and launching a live product with paying users.</div>
+        <div class="tags"><span class="tag-pill">MLOps</span><span class="tag-pill">Docker</span><span class="tag-pill">CI/CD</span><span class="tag-pill">AWS / Azure / GCP</span><span class="tag-pill">Model Monitoring</span><span class="tag-pill">Pre-Training</span><span class="tag-pill">arXiv Paper</span><span class="tag-pill">Product Launch</span></div>
+      </div>
+      <div class="ms-col" style="border-left-color:rgba(255,34,68,.2);">
+        <div class="ms-label" style="color:var(--red);">Day 147 — Monster Milestone</div>
+        <div class="ms-badge badge-monster">⬡ Monster Level</div>
+        <div class="ms-title" style="color:var(--red);">arXiv Paper + Live Product + NVIDIA NCA-GENL</div>
+        <div class="ms-verify" style="color:rgba(255,34,68,.5);">Original research submitted to arXiv. A live AI product with documented real users. NVIDIA Generative AI LLMs cert passed. Azure AI-102 passed. 10 applications sent to frontier AI companies.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DAILY -->
+<div class="daily-strip" id="daily">
+  <div class="stag" style="margin-bottom:12px;">Daily Protocol</div>
+  <h2 class="sh" style="margin-bottom:10px;">EVERY DAY.<br><span class="g">NO EXCEPTIONS.</span></h2>
+  <p class="ssub">Three hours minimum. 147 consecutive days. Your log is public. Your streak is visible.</p>
+
+  <div class="daily-grid">
+    <div class="dblock">
+      <div class="dtime">60</div><div class="dunit">Min — Study</div>
+      <div class="dtitle">Theory Block</div>
+      <div class="ddesc">One lecture or chapter. edX, fast.ai, Packt books, Stanford YouTube. Absorb the concept before touching code. No skimming.</div>
+    </div>
+    <div class="dblock">
+      <div class="dtime">90</div><div class="dunit">Min — Build</div>
+      <div class="dtitle">Code Block</div>
+      <div class="ddesc">Implement what you learned. Every day. A function, a layer, a pipeline. One GitHub commit minimum. No exceptions.</div>
+    </div>
+    <div class="dblock">
+      <div class="dtime">30</div><div class="dunit">Min — Log</div>
+      <div class="dtitle">Log Block</div>
+      <div class="ddesc">3–5 sentences public on GitHub. What you built. What broke. What you fix tomorrow. Visible accountability is the mechanism.</div>
+    </div>
+    <div class="dblock">
+      <div class="dtime">3+</div><div class="dunit">Hrs Total</div>
+      <div class="dtitle">Minimum Commitment</div>
+      <div class="ddesc">Monster tier averages 5–6 hours. Project phases hit more. If 3 hours daily is not possible, choose a different program.</div>
+    </div>
+  </div>
+
+  <div class="term">
+    <div class="tbar">
+      <div class="dot dot-r"></div><div class="dot dot-a"></div><div class="dot dot-g"></div>
+      <div class="ttitle">nullvector.monster — status</div>
+    </div>
+    <span class="tl"><span class="tp">$</span> <span class="tc">./gauntlet --init --tier MONSTER</span></span>
+    <span class="tl"><span class="to tg">✓ Sequence initialized. Day 001 of 147.</span></span>
+    <span class="tl"><span class="to">Phase: <span class="tg">01 IGNITION</span> — Python & Math Core</span></span>
+    <span class="tl"><span class="to">Tier: <span class="tr">MONSTER</span> — all milestone tiers active</span></span>
+    <span class="tl"><span class="to ta">⚠ Target cert: Azure AI-900 in 21 days.</span></span>
+    <span class="tl">&nbsp;</span>
+    <span class="tl"><span class="tp">$</span> <span class="tc">./gauntlet --milestones --tier MONSTER</span></span>
+    <span class="tl"><span class="to">Day 021 → <span class="tg">Azure AI-900 cert passed</span></span></span>
+    <span class="tl"><span class="to">Day 042 → <span class="tg">Live ML app + research paper implemented</span></span></span>
+    <span class="tl"><span class="to">Day 063 → <span class="tg">NVIDIA NCA-AIIO cert + open-source PR merged</span></span></span>
+    <span class="tl"><span class="to">Day 084 → <span class="tg">Mini-LLM deployed + HuggingFace model published</span></span></span>
+    <span class="tl"><span class="to">Day 105 → <span class="tg">AWS ML Specialty + fine-tuned model with evals</span></span></span>
+    <span class="tl"><span class="to">Day 126 → <span class="tg">Autonomous agent + Google PMLE cert</span></span></span>
+    <span class="tl"><span class="to">Day 147 → <span class="tr">arXiv paper + live product + NVIDIA NCA-GENL + Azure AI-102</span></span></span>
+    <span class="tl">&nbsp;</span>
+    <span class="tl"><span class="tp">$</span> <span class="cur"></span></span>
+  </div>
+</div>
+
+<!-- OUTCOMES -->
+<section id="outcomes">
+  <div class="stag">Day 147 — What You Own</div>
+  <h2 class="sh">THE <span class="g">OUTCOMES</span></h2>
+  <p class="ssub">Standard and Advanced outcomes below. Monster Level outcomes follow — they are categorically different from anything a typical bootcamp produces.</p>
+
+  <div class="outcomes-wrap">
+    <div class="oc-row">
+      <div class="oc" data-n="1">
+        <div class="oc-label">Standard / Advanced</div>
+        <div class="oc-title">5 INDUSTRY<br>CERTIFICATIONS</div>
+        <div class="oc-desc">Azure AI-900, NVIDIA NCA-AIIO, AWS ML Specialty MLS-C01, Azure AI-102, and your HarvardX CS50 AI certificate. The cert stack that makes a recruiter stop scrolling and pick up the phone.</div>
+      </div>
+      <div class="oc" data-n="2">
+        <div class="oc-label">Standard / Advanced</div>
+        <div class="oc-title">TRANSFORMER<br>FROM SCRATCH</div>
+        <div class="oc-desc">You built and trained a language model without a framework doing the hard parts. You can walk an interviewer through your attention implementation line by line — the skill that puts you in the top 5% of ML candidates.</div>
+      </div>
+      <div class="oc" data-n="3">
+        <div class="oc-label">Standard / Advanced</div>
+        <div class="oc-title">7 LIVE<br>DEPLOYMENTS</div>
+        <div class="oc-desc">Seven production applications with public URLs — ML classifier, deep learning model, mini-LLM, fine-tuned model, RAG system, autonomous agent, MLOps pipeline. A portfolio that loads before the interview starts.</div>
+      </div>
+    </div>
+    <div class="oc-row">
+      <div class="oc" data-n="4">
+        <div class="oc-label">Advanced / Monster</div>
+        <div class="oc-title">PUBLISHED<br>HF MODEL</div>
+        <div class="oc-desc">A fine-tuned model released publicly on HuggingFace with documented evaluation results, a model card, and measurable benchmark scores. A model people can actually download and use — your name on it.</div>
+      </div>
+      <div class="oc" data-n="5">
+        <div class="oc-label">Advanced / Monster</div>
+        <div class="oc-title">OPEN SOURCE<br>CONTRIBUTOR</div>
+        <div class="oc-desc">At least one pull request merged into a major AI repository — HuggingFace Transformers, LangChain, LlamaIndex, or equivalent. Permanent record in a codebase engineers at Anthropic, Google, and OpenAI use every day.</div>
+      </div>
+      <div class="oc" data-n="6">
+        <div class="oc-label">Advanced / Monster</div>
+        <div class="oc-title">GOOGLE PMLE<br>CERTIFICATION</div>
+        <div class="oc-desc">Google Professional Machine Learning Engineer — the third cloud AI credential completing your AWS + Azure + GCP trifecta. The combination of all three cloud certs is rare enough to be a significant hiring differentiator.</div>
+      </div>
+    </div>
+
+    <!-- MONSTER ROW -->
+    <div class="oc-monster-row">
+      <div class="omr-label">
+        <div class="omr-tag">// Monster Level Only</div>
+        <div class="omr-name">MONSTER<br>TIER</div>
+      </div>
+      <div class="omr-grid">
+        <div class="omr-item">
+          <div class="omr-item-title">PRE-TRAINED<br>LLM FROM SCRATCH</div>
+          <div class="omr-item-desc">A 125M+ parameter language model pre-trained on custom data — not fine-tuned from a base model. You configured distributed training, managed the data pipeline, ran the training loop, and evaluated the resulting model. This is what research engineers do.</div>
+        </div>
+        <div class="omr-item">
+          <div class="omr-item-title">ARXIV PAPER<br>PUBLISHED</div>
+          <div class="omr-item-desc">An original research paper submitted to arXiv — a real contribution to the literature. Could be a novel training technique, an architectural variation, an evaluation methodology, or an application study. Your name on a paper anyone in the field can find and cite.</div>
+        </div>
+        <div class="omr-item">
+          <div class="omr-item-title">LIVE AI PRODUCT<br>WITH REAL USERS</div>
+          <div class="omr-item-desc">A launched AI product — not a demo, not a portfolio project — a product with documented real users and, ideally, revenue. Built on your own fine-tuned or pre-trained model. Deployed infrastructure. A company, or the beginning of one.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RULES -->
+<section style="background:var(--panel);border-top:1px solid var(--border);">
+  <div class="stag">The Rules</div>
+  <h2 class="sh">NON-<span class="g">NEGOTIABLE</span></h2>
+  <p class="ssub">Six rules. They exist because the outcome requires them. Rules 3 and 4 are the ones people break. Don't.</p>
+
+  <div class="rules">
+    <div class="rule"><div class="rn">01</div><div><div class="rt">Code every day</div><div class="rd">One GitHub commit minimum. 147 consecutive days. Sick, traveling, exhausted — you still push something. The streak is the evidence.</div></div></div>
+    <div class="rule"><div class="rn">02</div><div><div class="rt">Build before you watch</div><div class="rd">Every lecture is followed immediately by implementation. Open a code editor before you press play. Watching is not building.</div></div></div>
+    <div class="rule"><div class="rn">03</div><div><div class="rt">Miss a milestone — restart the phase</div><div class="rd">No milestone = restart that 21-day phase from Day 1. No extensions, no partial credit. The milestone is the gate. This is what makes the credential real.</div></div></div>
+    <div class="rule"><div class="rn">04</div><div><div class="rt">Deploy or it didn't happen</div><div class="rd">Every major project is publicly accessible via URL before the phase ends. A local notebook is not a deployment. A product is something a stranger can use right now.</div></div></div>
+    <div class="rule"><div class="rn">05</div><div><div class="rt">Log publicly</div><div class="rd">Your daily log lives on your public GitHub. Accountability by visibility is the most durable form of discipline there is.</div></div></div>
+    <div class="rule"><div class="rn">06</div><div><div class="rt">Phases are sequential</div><div class="rd">Phase 04 is not survivable without Phase 03. Phase 05 is useless without Phase 04. The sequence is load-bearing. Do not disrupt it.</div></div></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta" id="start">
+  <div class="stag" style="justify-content:center;margin-bottom:18px;">Begin</div>
+  <h2 class="sh" style="margin-bottom:18px;">START THE<br><span class="g">CHALLENGE</span></h2>
+  <p class="ssub" style="margin:0 auto 36px;text-align:center;max-width:440px;">Your Day 1 packet includes the full 147-day protocol, GitHub journal template, cert study schedule, and your complete edX + Humble Bundle resource map — organized by phase and tier.</p>
+
+  <div class="form-row">
+    <input type="email" class="email-in" placeholder="your@email.com" />
+    <a href="#" class="btn-p">Start →</a>
+  </div>
+  <div class="cnote" style="margin-bottom:16px;">// Day 1 packet sent immediately. No spam. Unsubscribe anytime.</div>
+
+  <div style="display:flex;gap:10px;justify-content:center;margin-top:24px;">
+    <div style="font-family:var(--ui);font-size:8px;letter-spacing:2px;color:var(--muted);padding:5px 12px;border:1px solid var(--border-hi);text-transform:uppercase;">Standard Path</div>
+    <div style="font-family:var(--ui);font-size:8px;letter-spacing:2px;color:var(--cyan);padding:5px 12px;border:1px solid rgba(0,207,255,.3);text-transform:uppercase;">Advanced Path</div>
+    <div style="font-family:var(--ui);font-size:8px;letter-spacing:2px;color:var(--red);padding:5px 12px;border:1px solid rgba(255,34,68,.3);text-transform:uppercase;background:rgba(255,34,68,.04);">⬡ Monster Level</div>
+  </div>
+</div>
+
+<footer>
+  <div class="fl">NULLVECTOR<span class="tld">.monster</span></div>
+  <div class="fc">© 2026 // 147-Day AI Gauntlet</div>
+  <div class="flinks">
+    <a href="#">GitHub</a>
+    <a href="#">Discord</a>
+    <a href="#">Protocol</a>
+  </div>
+</footer>
+
+<script>
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.opacity = '1';
+      e.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.06 });
+
+document.querySelectorAll('.phase, .oc, .rule, .dblock, .tier-card, .omr-item, .mission-left, .mission-right').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(14px)';
+  el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+  io.observe(el);
+});
+</script>
+</body>
+</html>
