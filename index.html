@@ -3,1203 +3,839 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NULL VECTOR — nullvector.monster</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@300;400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<title>NULL VECTOR — 150 Days to AI Master</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#020406;--panel:#070a0f;--panel2:#0a0e16;
-  --border:#121a28;--border-hi:#1c2a40;
-  --green:#00ff88;--green-glow:rgba(0,255,136,.18);
-  --cyan:#00cfff;--red:#ff2244;--amber:#ffaa00;--purple:#b366ff;
-  --white:#dde6f4;--muted:#44566a;--ghost:#16202e;
-  --mono:'IBM Plex Mono',monospace;--display:'Bebas Neue',sans-serif;--ui:'Share Tech Mono',monospace;
-}
-*{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-body{background:var(--bg);color:var(--white);font-family:var(--mono);overflow-x:hidden;}
-body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.06) 3px,rgba(0,0,0,0.06) 4px);pointer-events:none;z-index:9000;}
+  :root {
+    --bg:       #eeebe5;
+    --white:    #ffffff;
+    --black:    #080808;
+    --ink:      #0d0d0d;
+    --ink-mid:  #1a1a1a;
+    --ink-dim:  #333333;
+    --border:   #c0bbb2;
+    --border-dk:#777770;
+    --red:      #c8101e;
+    --red-dark: #9e0d18;
+    --red-dim:  rgba(200,16,30,.08);
+    --display:  'Bebas Neue', sans-serif;
+    --mono:     'DM Mono', monospace;
+    --body:     'Inter', sans-serif;
+  }
 
-/* ── NAV ── */
-nav{position:fixed;top:0;left:0;right:0;z-index:999;display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:52px;background:rgba(2,4,6,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);overflow:hidden;}
-.logo{font-family:var(--display);font-size:20px;letter-spacing:4px;color:var(--green);text-shadow:0 0 20px var(--green-glow);text-decoration:none;display:flex;align-items:center;white-space:nowrap;}
-.logo .tld{color:var(--red);}
-.logo-sub{font-family:var(--ui);font-size:7px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-left:12px;border-left:1px solid var(--border-hi);padding-left:12px;display:none;}
-.nav-r{display:flex;align-items:center;gap:16px;}
-.nav-r a{font-family:var(--ui);font-size:9px;letter-spacing:2px;color:var(--muted);text-decoration:none;text-transform:uppercase;transition:color .2s;display:none;}
-.nav-r a:hover{color:var(--green);}
-.start-btn{font-family:var(--ui);font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:7px 14px;border:1px solid var(--green);color:var(--green);background:transparent;cursor:pointer;text-decoration:none;transition:all .2s;white-space:nowrap;}
-.start-btn:hover{background:var(--green);color:var(--bg);}
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--body);
+    overflow-x: hidden;
+  }
 
-/* ── HERO ── */
-.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:80px 20px 60px;position:relative;overflow:hidden;}
-.hero-grid{position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:40px 40px;opacity:.2;}
-.hero-orb{position:absolute;top:10%;right:-50px;width:400px;height:400px;background:radial-gradient(circle,rgba(0,255,136,.04) 0%,transparent 60%);pointer-events:none;}
-.eyebrow{font-family:var(--ui);font-size:8px;letter-spacing:3px;color:var(--green);text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
-.eyebrow::before{content:'';width:20px;height:1px;background:var(--green);}
-.h1{font-family:var(--display);font-size:clamp(72px,20vw,172px);line-height:.86;letter-spacing:4px;position:relative;z-index:1;}
-.h1 .dim{color:var(--ghost);}
-.h1 .g{color:var(--green);text-shadow:0 0 40px rgba(0,255,136,.3);}
-.domain-line{font-family:var(--display);font-size:clamp(13px,4vw,26px);letter-spacing:5px;color:var(--muted);margin:8px 0 20px;position:relative;z-index:1;}
-.domain-line .tld{color:var(--red);}
-.hero-desc{font-size:12px;line-height:1.85;color:var(--muted);border-left:2px solid var(--green);padding-left:14px;margin-bottom:28px;position:relative;z-index:1;}
-.hero-desc strong{color:var(--white);}
+  /* ── NOISE TEXTURE ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 9999;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+    opacity: .5;
+  }
 
-/* stats scroll on mobile */
-.stats{display:flex;gap:0;margin-bottom:28px;position:relative;z-index:1;border:1px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%;}
-.stats::-webkit-scrollbar{display:none;}
-.stat{padding:14px 18px;display:flex;flex-direction:column;gap:2px;border-right:1px solid var(--border);flex-shrink:0;}
-.stat:last-child{border-right:none;}
-.sn{font-family:var(--display);font-size:36px;color:var(--green);line-height:1;text-shadow:0 0 14px rgba(0,255,136,.2);}
-.sl{font-family:var(--ui);font-size:7px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);white-space:nowrap;}
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
 
-.btns{display:flex;flex-direction:column;gap:8px;position:relative;z-index:1;}
-.btn-p{font-family:var(--ui);font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:14px 24px;background:var(--green);color:var(--bg);border:none;cursor:pointer;text-decoration:none;font-weight:600;transition:all .2s;text-align:center;}
-.btn-s{font-family:var(--ui);font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:14px 24px;background:transparent;color:var(--muted);border:1px solid var(--border-hi);cursor:pointer;text-decoration:none;transition:all .2s;text-align:center;}
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    height: 52px;
+    background: var(--black);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 28px;
+  }
+  .nav-logo {
+    font-family: var(--display);
+    font-size: 22px; letter-spacing: 5px;
+    color: #fff; text-decoration: none;
+    display: flex; align-items: center; gap: 0;
+  }
+  .nav-logo .tld { color: var(--red); }
+  .nav-links { display: flex; align-items: center; gap: 28px; }
+  .nav-links a {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 1px;
+    text-transform: uppercase; color: rgba(255,255,255,.5);
+    text-decoration: none; transition: color .15s;
+  }
+  .nav-links a:hover { color: #fff; }
+  .nav-cta {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 1px;
+    text-transform: uppercase; padding: 7px 16px;
+    background: var(--red); color: #fff;
+    text-decoration: none; transition: background .15s;
+  }
+  .nav-cta:hover { background: var(--red-dark); }
 
-.ticker{position:absolute;bottom:0;left:0;right:0;height:28px;background:var(--panel);border-top:1px solid var(--border);display:flex;align-items:center;overflow:hidden;}
-.tlabel{font-family:var(--ui);font-size:7px;letter-spacing:2px;color:var(--green);padding:0 10px;border-right:1px solid var(--border);height:100%;display:flex;align-items:center;white-space:nowrap;}
-.ttrack{display:flex;gap:36px;animation:tscroll 28s linear infinite;white-space:nowrap;padding-left:16px;}
-.titem{font-family:var(--ui);font-size:7px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;}
-.titem span{color:var(--cyan);margin-right:4px;}
-@keyframes tscroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    background: var(--black);
+    display: flex; flex-direction: column;
+    justify-content: center;
+    padding: 80px 28px 64px;
+    position: relative; overflow: hidden;
+  }
 
-/* ── ALARM ── */
-.alarm{background:var(--panel);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:16px 20px;display:flex;align-items:flex-start;gap:12px;}
-.alarm-icon{font-family:var(--display);font-size:28px;color:var(--red);flex-shrink:0;line-height:1;margin-top:2px;}
-.alarm-text{font-size:11px;line-height:1.7;color:var(--muted);}
-.alarm-text strong{color:var(--red);}
+  /* diagonal stripe texture */
+  .hero::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      -55deg,
+      transparent, transparent 40px,
+      rgba(255,255,255,.012) 40px, rgba(255,255,255,.012) 41px
+    );
+    pointer-events: none;
+  }
 
-/* ── SECTIONS ── */
-section{padding:56px 20px;position:relative;}
-.stag{font-family:var(--ui);font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--green);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
-.stag::before{content:'//';color:var(--muted);}
-.sh{font-family:var(--display);font-size:clamp(28px,8vw,58px);letter-spacing:3px;color:#fff;margin-bottom:10px;line-height:1;}
-.sh .g{color:var(--green);}.sh .r{color:var(--red);}
-.ssub{font-size:11px;color:var(--muted);line-height:1.8;margin-bottom:36px;}
+  .hero-inner { position: relative; z-index: 1; max-width: 1000px; margin: 0 auto; width: 100%; }
 
-/* ── GAMIFICATION STRIP ── */
-.xp-strip{background:var(--panel);border-bottom:1px solid var(--border);padding:20px;}
-.xp-label{font-family:var(--ui);font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--green);margin-bottom:12px;display:flex;align-items:center;gap:6px;}
-.xp-label::before{content:'//';color:var(--muted);}
-.xp-bar-wrap{background:var(--ghost);height:6px;border-radius:0;margin-bottom:8px;overflow:hidden;}
-.xp-bar{height:100%;background:linear-gradient(to right,var(--green),var(--cyan));width:0%;transition:width 1s ease;}
-.xp-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
-.xp-level{font-family:var(--display);font-size:22px;color:var(--green);letter-spacing:2px;}
-.xp-next{font-family:var(--ui);font-size:8px;letter-spacing:1px;color:var(--muted);}
-.badges{display:flex;gap:8px;flex-wrap:wrap;}
-.badge{width:40px;height:40px;border:1px solid var(--border-hi);display:flex;align-items:center;justify-content:center;font-size:18px;position:relative;transition:all .3s;}
-.badge.earned{border-color:var(--green);box-shadow:0 0 12px rgba(0,255,136,.2);}
-.badge.locked{opacity:.25;filter:grayscale(1);}
-.badge.monster-badge-icon{border-color:rgba(255,34,68,.4);}
-.badge-tip{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--panel);border:1px solid var(--border-hi);padding:5px 8px;font-family:var(--ui);font-size:7px;letter-spacing:1px;color:var(--white);white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s;z-index:10;}
-.badge:hover .badge-tip{opacity:1;}
-.streak-row{display:flex;align-items:center;gap:10px;margin-top:12px;}
-.streak-num{font-family:var(--display);font-size:32px;color:var(--amber);line-height:1;}
-.streak-label{font-family:var(--ui);font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
-.streak-dots{display:flex;gap:3px;flex-wrap:wrap;margin-top:8px;}
-.sdot{width:10px;height:10px;border-radius:1px;background:var(--ghost);}
-.sdot.done{background:var(--green);}
-.sdot.today{background:var(--amber);animation:blink 1s step-end infinite;}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+  .hero-tag {
+    font-family: var(--mono); font-size: 12px; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--red);
+    margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+  }
+  .hero-tag::before { content: ''; width: 24px; height: 1px; background: var(--red); }
 
-/* tier selector */
-.tier-selector{display:flex;gap:2px;background:var(--border);margin-bottom:24px;}
-.tier-btn{flex:1;padding:12px 8px;font-family:var(--ui);font-size:8px;letter-spacing:2px;text-transform:uppercase;background:var(--panel);color:var(--muted);border:none;cursor:pointer;transition:all .2s;text-align:center;}
-.tier-btn.active-std{background:var(--bg);color:var(--green);border-top:2px solid var(--green);}
-.tier-btn.active-adv{background:var(--bg);color:var(--cyan);border-top:2px solid var(--cyan);}
-.tier-btn.active-mon{background:#0c0810;color:var(--red);border-top:2px solid var(--red);}
+  .hero-h1 {
+    font-family: var(--display);
+    font-size: clamp(80px, 16vw, 180px);
+    line-height: .86; letter-spacing: 3px; color: #fff;
+    margin-bottom: 0;
+  }
+  .hero-h1 .r { color: var(--red); }
+  .hero-h1 .dim { color: rgba(255,255,255,.15); }
 
-/* tier cards — vertical swipe stack on mobile */
-.tier-panels{position:relative;}
-.tier-panel{display:none;background:var(--panel);padding:24px 20px;border:1px solid var(--border);}
-.tier-panel.active{display:block;}
-.tier-panel.t-adv{border-top:2px solid var(--cyan);}
-.tier-panel.t-mon{background:#0c0810;border-top:2px solid var(--red);}
-.tier-name-big{font-family:var(--display);font-size:48px;letter-spacing:4px;color:#fff;line-height:1;margin-bottom:8px;}
-.tier-name-big.mon{color:var(--red);text-shadow:0 0 20px rgba(255,34,68,.3);}
-.tier-body{font-size:11px;line-height:1.8;color:var(--muted);margin-bottom:16px;}
-.tier-ms-list{display:flex;flex-direction:column;gap:6px;}
-.tier-ms{font-family:var(--ui);font-size:9px;letter-spacing:1px;color:var(--muted);display:flex;align-items:flex-start;gap:8px;line-height:1.5;}
-.tier-ms::before{content:'→';flex-shrink:0;margin-top:1px;}
-.tier-ms.std::before{color:var(--green);}
-.tier-ms.adv::before{color:var(--cyan);}
-.tier-ms.mon::before{color:var(--red);}
+  .hero-domain {
+    font-family: var(--mono); font-size: clamp(10px, 2vw, 16px);
+    letter-spacing: 6px; color: rgba(255,255,255,.35);
+    margin: 10px 0 32px;
+  }
+  .hero-domain .tld { color: var(--red); opacity: 1; }
 
-/* ── PHASE LIST ── */
-.phase-list{display:flex;flex-direction:column;gap:2px;background:var(--border);}
-.phase{background:var(--panel);position:relative;overflow:hidden;border-left:3px solid transparent;transition:border-color .3s;}
-.phase:hover{border-left-color:var(--green);}
-.phase.monster-phase{background:#0c0810;border-left-color:rgba(255,34,68,.3);}
-.phase-top{display:flex;align-items:flex-start;gap:0;padding:20px 16px 0;}
-.phase-num{font-family:var(--display);font-size:40px;color:var(--ghost);line-height:1;width:52px;flex-shrink:0;}
-.phase-meta{flex:1;}
-.phase-days{font-family:var(--ui);font-size:7px;letter-spacing:3px;color:var(--green);text-transform:uppercase;margin-bottom:3px;}
-.monster-phase .phase-days{color:var(--red);}
-.phase-title{font-family:var(--display);font-size:18px;letter-spacing:2px;color:#fff;line-height:1.1;}
-.phase-body{padding:12px 16px 0;}
-.phase-desc{font-size:10px;line-height:1.78;color:var(--muted);margin-bottom:10px;}
-.tags{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:12px;}
-.tag-pill{font-family:var(--ui);font-size:7px;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;border:1px solid var(--border-hi);color:var(--muted);}
+  .hero-body {
+    font-size: 18px; line-height: 1.75;
+    color: rgba(255,255,255,.8);
+    max-width: 520px; margin-bottom: 36px;
+    border-left: 3px solid var(--red);
+    padding-left: 18px;
+  }
+  .hero-body strong { color: #fff; font-weight: 600; }
 
-/* milestone box */
-.ms-box{background:var(--bg);border-top:1px solid var(--border);padding:14px 16px;display:flex;flex-direction:column;gap:6px;}
-.ms-label{font-family:var(--ui);font-size:7px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
-.ms-badge{display:inline-flex;align-items:center;gap:4px;font-family:var(--ui);font-size:7px;letter-spacing:2px;text-transform:uppercase;padding:3px 8px;border:1px solid;width:fit-content;}
-.badge-cert{border-color:rgba(0,207,255,.35);color:var(--cyan);}
-.badge-deploy{border-color:rgba(0,255,136,.35);color:var(--green);}
-.badge-build{border-color:rgba(255,170,0,.35);color:var(--amber);}
-.badge-monster{border-color:rgba(255,34,68,.5);color:var(--red);background:rgba(255,34,68,.06);}
-.ms-title{font-family:var(--display);font-size:16px;letter-spacing:1px;color:#fff;line-height:1.1;}
-.ms-verify{font-family:var(--ui);font-size:8px;color:var(--muted);line-height:1.6;}
+  /* stat row */
+  .stats {
+    display: flex; flex-wrap: wrap; gap: 0;
+    margin-bottom: 36px;
+    border: 1px solid rgba(255,255,255,.1);
+    width: fit-content;
+  }
+  .stat {
+    padding: 16px 22px;
+    border-right: 1px solid rgba(255,255,255,.1);
+  }
+  .stat:last-child { border-right: none; }
+  .sn {
+    font-family: var(--display); font-size: 42px;
+    color: var(--red); line-height: 1;
+  }
+  .sl {
+    font-family: var(--mono); font-size: 10px;
+    letter-spacing: 1px; text-transform: uppercase;
+    color: rgba(255,255,255,.4); margin-top: 2px;
+  }
 
-/* guide drawer */
-.guide-toggle{width:100%;padding:10px 16px;background:none;border:none;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-family:var(--ui);font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--green);transition:background .2s;}
-.guide-toggle:hover{background:rgba(0,255,136,.04);}
-.guide-toggle .arrow{transition:transform .3s;font-size:10px;}
-.guide-toggle.open .arrow{transform:rotate(180deg);}
-.guide-drawer{display:none;background:rgba(0,255,136,.03);border-top:1px solid rgba(0,255,136,.1);}
-.guide-drawer.open{display:block;}
-.guide-inner{padding:16px;}
-.guide-day{margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border);}
-.guide-day:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none;}
-.guide-day-label{font-family:var(--ui);font-size:7px;letter-spacing:3px;text-transform:uppercase;color:var(--green);margin-bottom:6px;}
-.guide-day-title{font-family:var(--display);font-size:14px;letter-spacing:1px;color:#fff;margin-bottom:6px;}
-.guide-day-text{font-size:10px;line-height:1.7;color:var(--muted);margin-bottom:8px;}
-.guide-links{display:flex;flex-direction:column;gap:5px;}
-.guide-link{display:flex;align-items:flex-start;gap:8px;text-decoration:none;padding:8px 10px;border:1px solid var(--border-hi);transition:border-color .2s;}
-.guide-link:hover{border-color:var(--green);}
-.guide-link-icon{font-size:14px;flex-shrink:0;margin-top:1px;}
-.guide-link-body{}
-.guide-link-name{font-family:var(--ui);font-size:8px;letter-spacing:1px;color:var(--white);text-transform:uppercase;margin-bottom:2px;}
-.guide-link-desc{font-size:9px;color:var(--muted);line-height:1.4;}
-.guide-done{font-family:var(--ui);font-size:8px;letter-spacing:1px;color:var(--amber);margin-top:8px;padding:6px 10px;border:1px solid rgba(255,170,0,.3);display:block;}
+  .btns { display: flex; flex-wrap: wrap; gap: 10px; }
+  .btn-p {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 3px;
+    text-transform: uppercase; padding: 14px 28px;
+    background: var(--red); color: #fff;
+    border: none; text-decoration: none; transition: background .15s;
+  }
+  .btn-p:hover { background: var(--red-dark); }
+  .btn-s {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 3px;
+    text-transform: uppercase; padding: 14px 28px;
+    background: transparent; color: rgba(255,255,255,.5);
+    border: 1px solid rgba(255,255,255,.2); text-decoration: none;
+    transition: all .15s;
+  }
+  .btn-s:hover { border-color: #fff; color: #fff; }
 
-/* monster strip */
-.monster-strip{background:#100812;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:10px;}
-.monster-strip-dot{width:6px;height:6px;border-radius:50%;background:var(--red);animation:blink 1s step-end infinite;flex-shrink:0;}
-.monster-strip-text{font-family:var(--ui);font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--red);}
-.monster-strip-sub{font-family:var(--ui);font-size:7px;letter-spacing:1px;color:var(--muted);}
+  /* big bg number */
+  .hero-bg-num {
+    position: absolute; right: -10px; bottom: -30px;
+    font-family: var(--display); font-size: clamp(160px, 28vw, 340px);
+    color: rgba(255,255,255,.04); line-height: 1;
+    pointer-events: none; letter-spacing: -4px; z-index: 0;
+  }
 
-/* ── MISSION ── */
-.mission{padding:56px 20px;background:var(--bg);border-bottom:1px solid var(--border);}
-.mission-label{font-family:var(--ui);font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--green);margin-bottom:12px;display:flex;align-items:center;gap:6px;}
-.mission-label::before{content:'//';color:var(--muted);}
-.mission-title{font-family:var(--display);font-size:clamp(36px,10vw,64px);letter-spacing:3px;color:#fff;line-height:.95;margin-bottom:24px;}
-.mission-title .g{color:var(--green);}
-.mission-statement{font-size:14px;line-height:1.9;color:var(--white);font-weight:300;margin-bottom:20px;}
-.mission-statement .hl{color:var(--green);font-weight:600;}
-.mission-rule{width:40px;height:2px;background:linear-gradient(to right,var(--green),transparent);margin-bottom:16px;}
-.mission-sub{font-family:var(--ui);font-size:9px;letter-spacing:1px;color:var(--muted);line-height:1.8;border-left:1px solid var(--border-hi);padding-left:14px;}
+  /* ── TICKER ── */
+  .ticker {
+    background: var(--red); height: 30px;
+    display: flex; align-items: center; overflow: hidden;
+  }
+  .ticker-track {
+    display: flex; gap: 48px;
+    animation: tick 32s linear infinite;
+    white-space: nowrap; padding-left: 24px;
+  }
+  .ti {
+    font-family: var(--mono); font-size: 11px;
+    letter-spacing: 1px; text-transform: uppercase;
+    color: rgba(255,255,255,.9);
+  }
+  .ti::before { content: '→'; margin-right: 8px; color: rgba(255,255,255,.5); }
+  @keyframes tick { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-/* ── DAILY ── */
-.daily-strip{background:var(--panel);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:56px 20px;}
-.daily-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--border);margin-bottom:32px;}
-.dblock{background:var(--bg);padding:20px 16px;}
-.dtime{font-family:var(--display);font-size:34px;color:var(--green);line-height:1;margin-bottom:2px;}
-.dunit{font-family:var(--ui);font-size:7px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
-.dtitle{font-family:var(--ui);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#fff;margin-bottom:5px;}
-.ddesc{font-size:9px;line-height:1.7;color:var(--muted);}
+  /* ── MISSION ── */
+  .mission {
+    background: var(--white);
+    border-bottom: 3px solid var(--black);
+    padding: 80px 28px;
+  }
+  .section-eyebrow {
+    font-family: var(--mono); font-size: 13px; letter-spacing: 1px;
+    text-transform: uppercase; color: #111; font-weight: 700;
+    margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+  }
+  .section-eyebrow::before { content: '//'; color: var(--red); }
+  .mission-h {
+    font-family: var(--display);
+    font-size: clamp(36px, 7vw, 80px);
+    line-height: .9; letter-spacing: 2px;
+    color: var(--black); margin-bottom: 28px;
+  }
+  .mission-h .r { color: var(--red); }
+  .mission-body {
+    font-size: 20px; line-height: 1.75; font-weight: 600;
+    color: #111; max-width: 680px; margin-bottom: 20px;
+  }
+  .mission-body strong { color: #000; font-weight: 700; }
+  .mission-rule { width: 48px; height: 3px; background: var(--red); margin-bottom: 18px; }
+  .mission-sub {
+    font-size: 15px; font-weight: 600;
+    color: #111; line-height: 1.8;
+    border-left: 3px solid var(--border);
+    padding-left: 16px; max-width: 560px;
+  }
 
-/* terminal */
-.term{background:var(--bg);border:1px solid var(--border);border-top:2px solid var(--green);padding:20px;overflow-x:auto;}
-.tbar{display:flex;gap:5px;margin-bottom:16px;align-items:center;}
-.dot{width:8px;height:8px;border-radius:50%;}
-.dot-r{background:#ff2244;}.dot-a{background:#ffaa00;}.dot-g{background:#00ff88;}
-.ttitle{font-family:var(--ui);font-size:7px;letter-spacing:2px;color:var(--muted);margin-left:auto;text-transform:uppercase;}
-.tl{display:block;font-family:var(--ui);font-size:9px;line-height:1.9;white-space:nowrap;}
-.tp{color:var(--green);}.tc{color:#fff;}.to{color:var(--muted);padding-left:10px;}
-.tg{color:var(--green);}.tcn{color:var(--cyan);}.tr{color:var(--red);}.ta{color:var(--amber);}
-.cur{display:inline-block;width:6px;height:11px;background:var(--green);animation:blink 1s step-end infinite;vertical-align:middle;}
+  /* ── JOURNEY ── */
+  .journey {
+    background: var(--bg);
+    border-bottom: 3px solid var(--black);
+    padding: 80px 28px;
+  }
+  .journey-h {
+    font-family: var(--display);
+    font-size: clamp(36px, 7vw, 72px);
+    line-height: .9; letter-spacing: 2px;
+    color: var(--black); margin-bottom: 8px;
+  }
+  .journey-h .r { color: var(--red); }
+  .journey-sub {
+    font-size: 15px; color: #111; font-weight: 600;
+    line-height: 1.75; margin-bottom: 40px; max-width: 520px;
+  }
 
-/* ── OUTCOMES ── */
-.outcomes-grid{display:flex;flex-direction:column;gap:2px;background:var(--border);}
-.oc{background:var(--panel);padding:24px 20px;position:relative;overflow:hidden;}
-.oc.monster-oc{background:#0c0810;}
-.oc::after{content:attr(data-n);position:absolute;bottom:-16px;right:-4px;font-family:var(--display);font-size:80px;color:var(--ghost);opacity:.4;line-height:1;pointer-events:none;}
-.oc-label{font-family:var(--ui);font-size:7px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
-.oc-title{font-family:var(--display);font-size:20px;letter-spacing:2px;color:#fff;margin-bottom:8px;line-height:1.1;position:relative;z-index:1;}
-.oc-title.monster-title{color:var(--red);}
-.oc-desc{font-size:10px;line-height:1.75;color:var(--muted);position:relative;z-index:1;}
-.monster-section-label{background:#100812;border-top:1px solid rgba(255,34,68,.2);border-bottom:1px solid rgba(255,34,68,.2);padding:12px 20px;}
-.msl-tag{font-family:var(--ui);font-size:7px;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:4px;}
-.msl-name{font-family:var(--display);font-size:28px;color:var(--red);letter-spacing:3px;line-height:1;}
+  /* phase rows */
+  .phases { display: flex; flex-direction: column; gap: 0; border: 2px solid var(--black); }
+  .ph {
+    display: grid; grid-template-columns: 64px 1fr auto;
+    border-bottom: 1px solid var(--border);
+    background: var(--white);
+    transition: background .15s;
+  }
+  .ph:last-child { border-bottom: none; }
+  .ph:hover { background: var(--bg); }
+  .ph.monster { background: var(--black); }
+  .ph.monster:hover { background: #111; }
 
-/* ── RULES ── */
-.rules{display:flex;flex-direction:column;gap:2px;background:var(--border);}
-.rule{background:var(--panel);padding:20px 16px;display:flex;gap:12px;}
-.rn{font-family:var(--display);font-size:26px;color:var(--ghost);line-height:1;flex-shrink:0;width:28px;}
-.rt{font-family:var(--ui);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--green);margin-bottom:4px;}
-.rd{font-size:10px;line-height:1.7;color:var(--muted);}
+  .ph-num {
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--display); font-size: 32px;
+    color: var(--border-dk); border-right: 1px solid var(--border);
+    padding: 20px 0; transition: color .15s;
+  }
+  .ph:hover .ph-num { color: var(--red); }
+  .ph.monster .ph-num { color: rgba(255,255,255,.15); border-right-color: rgba(255,255,255,.1); }
 
-/* ── CTA ── */
-.cta{background:var(--panel);border-top:1px solid var(--border);padding:56px 20px;text-align:center;}
-.form-row{display:flex;flex-direction:column;gap:8px;max-width:400px;margin:0 auto 10px;}
-.email-in{background:var(--bg);border:1px solid var(--border-hi);padding:13px 14px;font-family:var(--ui);font-size:11px;color:var(--white);letter-spacing:1px;outline:none;width:100%;}
-.email-in:focus{border-color:var(--green);}
-.email-in::placeholder{color:var(--muted);}
-.cnote{font-family:var(--ui);font-size:8px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;}
-.tier-pick-row{display:flex;flex-direction:column;gap:6px;margin-top:20px;max-width:400px;margin-left:auto;margin-right:auto;}
-.tier-pick{font-family:var(--ui);font-size:8px;letter-spacing:2px;text-transform:uppercase;padding:8px 14px;border:1px solid;text-align:center;}
-.tp-std{border-color:var(--border-hi);color:var(--muted);}
-.tp-adv{border-color:rgba(0,207,255,.3);color:var(--cyan);}
-.tp-mon{border-color:rgba(255,34,68,.3);color:var(--red);background:rgba(255,34,68,.04);}
+  .ph-body { padding: 18px 22px; }
+  .ph-days {
+    font-family: var(--mono); font-size: 13px; letter-spacing: 1px;
+    text-transform: uppercase; color: #111; font-weight: 600; margin-bottom: 3px;
+  }
+  .ph-title {
+    font-family: var(--display); font-size: 22px;
+    letter-spacing: 1px; color: var(--black); margin-bottom: 6px;
+  }
+  .ph.monster .ph-title { color: #fff; }
+  .ph-desc { font-size: 15px; line-height: 1.75; color: #111; font-weight: 600; }
+  .ph.monster .ph-desc { color: rgba(255,255,255,.85); font-weight: 500; }
 
-/* ── FOOTER ── */
-footer{padding:24px 20px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:12px;}
-.fl{font-family:var(--display);font-size:18px;letter-spacing:4px;color:var(--green);}
-.fl .tld{color:var(--red);}
-.fc{font-family:var(--ui);font-size:8px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;}
-.flinks{display:flex;gap:16px;}
-.flinks a{font-family:var(--ui);font-size:8px;letter-spacing:2px;color:var(--muted);text-decoration:none;text-transform:uppercase;}
+  .ph-ms {
+    padding: 18px 18px; border-left: 1px solid var(--border);
+    display: flex; flex-direction: column; justify-content: center;
+    min-width: 160px;
+  }
+  .ph.monster .ph-ms { border-left-color: rgba(255,255,255,.1); }
+  .ms-badge {
+    font-family: var(--mono); font-size: 12px; letter-spacing: 1px;
+    text-transform: uppercase; padding: 5px 10px; border: 2px solid;
+    width: fit-content; margin-bottom: 8px;
+    border-color: #111; color: #111; font-weight: 600;
+  }
+  .ms-badge.deploy { border-color: #111; color: #111; }
+  .ph.monster .ms-badge { border-color: rgba(255,255,255,.6); color: #fff; }
+  .ms-title {
+    font-family: var(--mono); font-size: 13px; letter-spacing: .5px;
+    color: #111; line-height: 1.5; font-weight: 700;
+  }
+  .ph.monster .ms-title { color: rgba(255,255,255,.9); }
 
-/* live dot */
-.live{display:inline-flex;align-items:center;gap:5px;font-family:var(--ui);font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--red);border:1px solid rgba(255,34,68,.3);padding:3px 8px;margin-bottom:20px;}
-.ldot{width:5px;height:5px;border-radius:50%;background:var(--red);animation:blink 1s step-end infinite;}
+  /* ── TRANSFORMATION ── */
+  .transform {
+    background: var(--white);
+    border-bottom: 3px solid var(--black);
+    padding: 80px 28px;
+  }
+  .transform-h {
+    font-family: var(--display);
+    font-size: clamp(36px, 7vw, 72px);
+    line-height: .9; letter-spacing: 2px;
+    color: var(--black); margin-bottom: 40px;
+  }
+  .transform-h .r { color: var(--red); }
+  .transform-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0; border: 2px solid var(--black);
+  }
+  .tblock { padding: 32px 28px; }
+  .tblock.before {
+    background: var(--bg);
+    border-right: 1px solid var(--border);
+  }
+  .tblock.after { background: var(--black); }
+  .tblock-label {
+    font-family: var(--mono); font-size: 13px; letter-spacing: 1px;
+    text-transform: uppercase; margin-bottom: 16px; font-weight: 600;
+  }
+  .tblock.before .tblock-label { color: #111; }
+  .tblock.after .tblock-label { color: var(--red); }
+  .tblock-item {
+    font-size: 15px; line-height: 1.75; font-weight: 600;
+    display: flex; align-items: flex-start; gap: 10px; margin-bottom: 9px;
+  }
+  .tblock.before .tblock-item { color: #111; }
+  .tblock.after .tblock-item { color: rgba(255,255,255,.92); }
+  .tblock-item .bullet { flex-shrink: 0; margin-top: 1px; }
+  .tblock.before .bullet { color: var(--red); }
+  .tblock.after .bullet { color: var(--red); }
 
-/* ── DESKTOP UPGRADES ── */
-@media(min-width:768px){
-  nav{padding:0 40px;}
-  .logo-sub{display:block;}
-  .nav-r a{display:block;}
-  .hero{padding:100px 40px 64px;}
-  .hero-orb{width:600px;height:600px;}
-  .btns{flex-direction:row;}
-  section{padding:72px 40px;}
-  .mission{padding:72px 40px;display:grid;grid-template-columns:1fr 2fr;gap:56px;align-items:center;}
-  .mission-title{margin-bottom:0;}
-  .daily-strip{padding:64px 40px;}
-  .daily-grid{grid-template-columns:repeat(4,1fr);}
-  .outcomes-grid{display:grid;grid-template-columns:1fr 1fr 1fr;}
-  .rules{display:grid;grid-template-columns:repeat(3,1fr);}
-  footer{flex-direction:row;align-items:center;justify-content:space-between;padding:28px 40px;}
-  .form-row{flex-direction:row;}
-  .email-in{border-right:none;}
-  .tier-pick-row{flex-direction:row;justify-content:center;}
-  .alarm{padding:20px 40px;}
-  .monster-strip{padding:10px 40px;}
-  /* phases desktop 3-col */
-  .phase-top{padding:24px 28px 0;}
-  .phase-body{padding:12px 28px 0;}
-  .ms-box{padding:14px 28px;}
-  .guide-toggle{padding:10px 28px;}
-  .guide-inner{padding:20px 28px;}
-}
-@media(min-width:1024px){
-  /* phase layout: number | content | milestone side by side */
-  .phase{display:grid;grid-template-columns:70px 1fr 280px;grid-template-rows:auto auto auto;}
-  .phase-top{grid-column:1/3;padding:24px 28px 0;align-items:flex-start;}
-  .phase-num{font-size:48px;}
-  .phase-body{grid-column:2/3;padding:12px 28px 0;}
-  .ms-box{grid-column:3/4;grid-row:1/4;border-top:none;border-left:1px solid var(--border);display:flex;flex-direction:column;justify-content:center;}
-  .guide-toggle{grid-column:1/3;}
-  .guide-drawer{grid-column:1/3;}
-  .tier-intro-desktop{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;background:var(--border);}
-  .tier-panels{display:none;}
-  .tier-selector{display:none;}
-  .tier-intro-desktop{display:grid;}
-  .tier-card-d{background:var(--panel);padding:28px 24px;}
-  .tier-card-d.t-adv{background:var(--panel2);border-top:2px solid var(--cyan);}
-  .tier-card-d.t-mon{background:#0c0810;border-top:2px solid var(--red);}
-  .tier-name-d{font-family:var(--display);font-size:36px;letter-spacing:3px;color:#fff;margin-bottom:6px;}
-  .tier-name-d.mon{color:var(--red);}
-  .tier-tag-d{font-family:var(--ui);font-size:7px;letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;}
-  .tier-tag-d.std{color:var(--green);}
-  .tier-tag-d.adv{color:var(--cyan);}
-  .tier-tag-d.mon{color:var(--red);}
-  .tier-body-d{font-size:10px;line-height:1.7;color:var(--muted);margin-bottom:14px;}
-}
+  /* ── RULES ── */
+  .rules {
+    background: var(--white);
+    border-bottom: 3px solid var(--black);
+    padding: 80px 28px;
+  }
+  .rules-h {
+    font-family: var(--display);
+    font-size: clamp(36px, 7vw, 72px);
+    line-height: .9; letter-spacing: 2px;
+    color: var(--black); margin-bottom: 40px;
+  }
+  .rules-h .r { color: var(--red); }
+  .rules-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 0; border: 2px solid var(--black);
+  }
+  .rule {
+    padding: 24px 22px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--white);
+  }
+  .rule:nth-child(3n) { border-right: none; }
+  .rule:nth-child(4), .rule:nth-child(5), .rule:nth-child(6) { border-bottom: none; }
+  .rule-n {
+    font-family: var(--display); font-size: 48px;
+    color: var(--red); line-height: 1; margin-bottom: 6px;
+  }
+  .rule-t {
+    font-family: var(--mono); font-size: 12px; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--black);
+    margin-bottom: 8px; font-weight: 500;
+  }
+  .rule-d { font-size: 15px; line-height: 1.75; color: #111; font-weight: 600; }
+
+  /* ── PDF / CTA ── */
+  .cta-section {
+    background: var(--black);
+    padding: 88px 28px;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .cta-section::before {
+    content: '150';
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--display); font-size: 40vw;
+    color: rgba(255,255,255,.025);
+    pointer-events: none; letter-spacing: -8px; line-height: 1;
+  }
+  .cta-h {
+    font-family: var(--display);
+    font-size: clamp(48px, 10vw, 120px);
+    letter-spacing: 3px; line-height: .88;
+    color: #fff; margin-bottom: 16px; position: relative;
+  }
+  .cta-h .r { color: var(--red); }
+  .cta-sub {
+    font-size: 14px; color: rgba(255,255,255,.45);
+    max-width: 440px; margin: 0 auto 40px;
+    line-height: 1.7; position: relative;
+  }
+
+  /* PDF grid */
+  .pdf-grid {
+    display: flex; flex-direction: column; gap: 1px;
+    max-width: 560px; margin: 0 auto 16px;
+    background: rgba(255,255,255,.08);
+    position: relative;
+  }
+  .pdf-btn {
+    display: flex; align-items: center; gap: 16px;
+    background: #111; padding: 14px 18px;
+    text-decoration: none; transition: background .15s;
+  }
+  .pdf-btn:hover { background: #1a1a1a; }
+  .pdf-btn.monster-phase { background: var(--red); }
+  .pdf-btn.monster-phase:hover { background: var(--red-dark); }
+  .pdf-num {
+    font-family: var(--display); font-size: 32px; line-height: 1;
+    color: var(--red); flex-shrink: 0; width: 36px; text-align: left;
+  }
+  .pdf-btn.monster-phase .pdf-num { color: #fff; }
+  .pdf-info { flex: 1; text-align: left; }
+  .pdf-title {
+    font-family: var(--display); font-size: 20px;
+    letter-spacing: 2px; color: #fff; line-height: 1; margin-bottom: 4px;
+  }
+  .pdf-sub {
+    font-family: var(--mono); font-size: 11px;
+    letter-spacing: .5px; color: rgba(255,255,255,.5);
+  }
+  .pdf-btn.monster-phase .pdf-sub { color: rgba(255,255,255,.8); }
+  .pdf-dl {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 1px;
+    color: rgba(255,255,255,.4); text-transform: uppercase; flex-shrink: 0;
+  }
+  .pdf-btn:hover .pdf-dl { color: var(--red); }
+  .pdf-btn.monster-phase .pdf-dl { color: rgba(255,255,255,.8); }
+  .cta-note {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 1px;
+    color: rgba(255,255,255,.3); text-transform: uppercase;
+    position: relative;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--black);
+    border-top: 1px solid rgba(255,255,255,.08);
+    padding: 22px 28px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px;
+  }
+  .footer-logo {
+    font-family: var(--display); font-size: 18px;
+    letter-spacing: 4px; color: #fff;
+  }
+  .footer-logo .tld { color: var(--red); }
+  .footer-copy {
+    font-family: var(--mono); font-size: 11px;
+    letter-spacing: 1px; color: rgba(255,255,255,.35);
+    text-transform: uppercase;
+  }
+  .footer-links { display: flex; gap: 20px; }
+  .footer-links a {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 1px;
+    color: rgba(255,255,255,.35); text-decoration: none;
+    text-transform: uppercase; transition: color .15s;
+  }
+  .footer-links a:hover { color: var(--red); }
+
+  /* ── ANIMATIONS ── */
+  .reveal {
+    opacity: 0; transform: translateY(16px);
+    transition: opacity .45s ease, transform .45s ease;
+  }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 680px) {
+    .stats { width: 100%; overflow-x: auto; }
+    .transform-grid { grid-template-columns: 1fr; }
+    .rules-grid { grid-template-columns: 1fr 1fr; }
+    .rule:nth-child(2n) { border-right: none; }
+    .rule:nth-child(3n) { border-right: 1px solid var(--border); }
+    .rule:nth-child(5) { border-bottom: none; }
+    .rule:nth-child(6) { border-bottom: none; }
+    .ph { grid-template-columns: 48px 1fr; }
+    .ph-ms { display: none; }
+    .nav-links { display: none; }
+    .hero-bg-num { display: none; }
+  }
+  @media (max-width: 480px) {
+    .rules-grid { grid-template-columns: 1fr; }
+    .rule { border-right: none !important; }
+  }
 </style>
 </head>
 <body>
 
+<!-- NAV -->
 <nav>
-  <a href="#" class="logo">NULL<span style="color:var(--muted)">VECTOR</span><span class="tld">.monster</span><span class="logo-sub">147-Day AI Gauntlet</span></a>
-  <div class="nav-r">
-    <a href="#mission">Mission</a>
-    <a href="#xp">Progress</a>
-    <a href="#tiers">Tiers</a>
-    <a href="#phases">Phases</a>
+  <a href="#" class="nav-logo">NULL<span style="color:rgba(255,255,255,.3)">VECTOR</span><span class="tld">.monster</span></a>
+  <div class="nav-links">
+    <a href="#mission">Challenge</a>
+    <a href="#journey">Phases</a>
     <a href="#outcomes">Outcomes</a>
-    <a href="#start" class="start-btn">Start →</a>
+    <a href="#rules">How It Works</a>
+    <a href="#start" class="nav-cta">Download PDFs →</a>
   </div>
 </nav>
 
 <!-- HERO -->
-<section class="hero" id="home">
-  <div class="hero-grid"></div>
-  <div class="hero-orb"></div>
-  <div class="live"><div class="ldot"></div>Cohort 01 — Open Now</div>
-  <div class="eyebrow">147-Day AI Gauntlet // Zero to LLM Engineer</div>
-  <h1 class="h1"><span class="dim">NULL</span><br><span class="g">VECTOR</span></h1>
-  <div class="domain-line">nullvector<span class="tld">.monster</span></div>
-  <p class="hero-desc">You know nothing about AI. In <strong>147 days — 7 phases of 21 days each</strong> — you will build real AI products, earn real cloud certifications, and implement a transformer from scratch. Every phase ends with a verifiable milestone. <strong>Not a score. Not a badge. Proof an employer can click on.</strong></p>
-  <div class="stats">
-    <div class="stat"><div class="sn">147</div><div class="sl">Days</div></div>
-    <div class="stat"><div class="sn">7</div><div class="sl">Phases</div></div>
-    <div class="stat"><div class="sn">7+</div><div class="sl">Deployments</div></div>
-    <div class="stat"><div class="sn">5</div><div class="sl">Certs</div></div>
-    <div class="stat"><div class="sn">3</div><div class="sl">Tiers</div></div>
-  </div>
-  <div class="btns">
-    <a href="#start" class="btn-p">Start the Challenge →</a>
-    <a href="#tiers" class="btn-s">Choose Your Tier</a>
-  </div>
-  <div class="ticker">
-    <div class="tlabel">// STACK</div>
-    <div style="overflow:hidden;flex:1;display:flex;">
-      <div class="ttrack">
-        <div class="titem"><span>→</span>Python · PyTorch · NumPy</div>
-        <div class="titem"><span>→</span>Transformers · Attention · LLMs</div>
-        <div class="titem"><span>→</span>Fine-Tuning · LoRA · RLHF</div>
-        <div class="titem"><span>→</span>RAG · LangChain · LlamaIndex</div>
-        <div class="titem"><span>→</span>Agentic AI · MCP · Tool Use</div>
-        <div class="titem"><span>→</span>AWS ML · Azure AI · NVIDIA NCA</div>
-        <div class="titem"><span>→</span>MLOps · Docker · CI/CD</div>
-        <div class="titem"><span>→</span>Python · PyTorch · NumPy</div>
-        <div class="titem"><span>→</span>Transformers · Attention · LLMs</div>
-        <div class="titem"><span>→</span>Fine-Tuning · LoRA · RLHF</div>
-        <div class="titem"><span>→</span>RAG · LangChain · LlamaIndex</div>
-        <div class="titem"><span>→</span>Agentic AI · MCP · Tool Use</div>
-        <div class="titem"><span>→</span>AWS ML · Azure AI · NVIDIA NCA</div>
-        <div class="titem"><span>→</span>MLOps · Docker · CI/CD</div>
-      </div>
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">150-Day AI Challenge // Zero to AI Master</div>
+    <h1 class="hero-h1">
+      <span class="dim">NULL</span><br>
+      <span class="r">VECTOR</span>
+    </h1>
+    <div class="hero-domain">nullvector<span class="tld">.monster</span></div>
+    <p class="hero-body">
+      You know <strong>nothing about AI</strong> right now.<br>
+      In <strong>150 days</strong> you will build real AI systems, earn industry certifications, and implement a transformer from scratch.<br>
+      Every day has a mission. <strong>Master it before it masters you.</strong>
+    </p>
+    <div class="stats">
+      <div class="stat"><div class="sn">150</div><div class="sl">Days</div></div>
+      <div class="stat"><div class="sn">7</div><div class="sl">Phases</div></div>
+      <div class="stat"><div class="sn">14</div><div class="sl">Harvard Projects</div></div>
+      <div class="stat"><div class="sn">5+</div><div class="sl">Certifications</div></div>
+      <div class="stat"><div class="sn">0</div><div class="sl">Prior Experience</div></div>
+    </div>
+    <div class="btns">
+      <a href="#start" class="btn-p">Download Phase 1 →</a>
+      <a href="#journey" class="btn-s">See All 7 Phases</a>
     </div>
   </div>
+  <div class="hero-bg-num">150</div>
 </section>
 
-<!-- ALARM -->
-<div class="alarm">
-  <div class="alarm-icon">!</div>
-  <div class="alarm-text"><strong>THIS IS NOT A COURSE.</strong> Every 21 days you produce something a hiring manager can verify — a URL, a credential number, a GitHub repo. No milestone = restart that phase. The challenge does not negotiate. Neither do AI companies.</div>
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track">
+    <div class="ti">Python · PyTorch · NumPy</div>
+    <div class="ti">Harvard CS50 AI · 14 Projects</div>
+    <div class="ti">Transformers · Attention · LLMs</div>
+    <div class="ti">Fine-Tuning · LoRA · RLHF · RAG</div>
+    <div class="ti">Agentic AI · MCP · LangChain</div>
+    <div class="ti">AWS ML · Azure AI · NVIDIA NCA</div>
+    <div class="ti">MLOps · Docker · CI/CD</div>
+    <div class="ti">150 Days · Zero to AI Master</div>
+    <div class="ti">Python · PyTorch · NumPy</div>
+    <div class="ti">Harvard CS50 AI · 14 Projects</div>
+    <div class="ti">Transformers · Attention · LLMs</div>
+    <div class="ti">Fine-Tuning · LoRA · RLHF · RAG</div>
+    <div class="ti">Agentic AI · MCP · LangChain</div>
+    <div class="ti">AWS ML · Azure AI · NVIDIA NCA</div>
+    <div class="ti">MLOps · Docker · CI/CD</div>
+    <div class="ti">150 Days · Zero to AI Master</div>
+  </div>
 </div>
 
 <!-- MISSION -->
-<div class="mission" id="mission">
-  <div>
-    <div class="mission-label">Our Mission</div>
-    <h2 class="mission-title">THE<br><span class="g">WHY</span><br>BEHIND<br>ALL OF IT</h2>
-  </div>
-  <div>
-    <p class="mission-statement">The more people who understand AI, the more <span class="hl">problems get solved.</span> The more problems that get solved, the better <span class="hl">people's lives become.</span> It is that simple and that serious. NULL VECTOR exists to put this technology in the hands of as many people as possible — not as consumers, <span class="hl">but as builders.</span> Because builders are the ones who change things.</p>
+<section class="mission" id="mission">
+  <div class="wrap">
+    <div class="section-eyebrow">Why This Challenge Exists</div>
+    <h2 class="mission-h">THE <span class="r">CHALLENGE</span><br>BEHIND ALL OF IT</h2>
+    <p class="mission-body">
+      The more people who understand AI, the more <strong>problems get solved.</strong> The more problems that get solved, the better <strong>people's lives become.</strong> It is that simple and that serious. NULL VECTOR exists to put this technology in the hands of as many people as possible — not as consumers, <strong>but as builders.</strong>
+    </p>
     <div class="mission-rule"></div>
-    <div class="mission-sub">AI built by people who care about people is the difference between technology that extracts value and technology that creates it. Every person who completes this challenge is one more person capable of making something better — for a community, a family, a stranger, a problem that has been waiting too long for someone with the right tools to arrive.</div>
-  </div>
-</div>
-
-<!-- GAMIFICATION STRIP -->
-<div class="xp-strip" id="xp">
-  <div class="xp-label">Your Progress</div>
-  <div class="xp-row">
-    <div>
-      <div style="font-family:var(--ui);font-size:7px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:3px;">Current Level</div>
-      <div class="xp-level" id="xp-level-label">LEVEL 0 — UNINITIALIZED</div>
-    </div>
-    <div class="xp-next" id="xp-next-label">Start Day 1 to begin</div>
-  </div>
-  <div class="xp-bar-wrap"><div class="xp-bar" id="xp-bar"></div></div>
-  <div style="font-family:var(--ui);font-size:7px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:10px;display:flex;justify-content:space-between;"><span>Day 0</span><span>Day 147</span></div>
-
-  <div style="font-family:var(--ui);font-size:7px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:8px;">Achievement Badges</div>
-  <div class="badges">
-    <div class="badge locked" id="b1">🐍<div class="badge-tip">IGNITION — Python Core</div></div>
-    <div class="badge locked" id="b2">☁️<div class="badge-tip">Azure AI-900 Cert</div></div>
-    <div class="badge locked" id="b3">🤖<div class="badge-tip">First ML App Deployed</div></div>
-    <div class="badge locked" id="b4">⚡<div class="badge-tip">NVIDIA NCA-AIIO Cert</div></div>
-    <div class="badge locked" id="b5">🧠<div class="badge-tip">Deep Learning Complete</div></div>
-    <div class="badge locked" id="b6">🔬<div class="badge-tip">Mini-LLM Built from Scratch</div></div>
-    <div class="badge locked" id="b7">🛠️<div class="badge-tip">AWS ML Specialty Cert</div></div>
-    <div class="badge locked" id="b8">🤖<div class="badge-tip">Autonomous Agent Deployed</div></div>
-    <div class="badge locked" id="b9">🚀<div class="badge-tip">Azure AI-102 Cert</div></div>
-    <div class="badge locked monster-badge-icon" id="b10">💀<div class="badge-tip">MONSTER COMPLETE</div></div>
-  </div>
-
-  <div class="streak-row">
-    <div>
-      <div class="streak-num" id="streak-num">0</div>
-      <div class="streak-label">Day Streak</div>
-    </div>
-    <div style="flex:1;margin-left:16px;">
-      <div style="font-family:var(--ui);font-size:7px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:6px;">Last 30 days</div>
-      <div class="streak-dots" id="streak-dots"></div>
-    </div>
-  </div>
-
-  <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;">
-    <button onclick="simulateProgress()" style="font-family:var(--ui);font-size:8px;letter-spacing:2px;text-transform:uppercase;padding:8px 14px;background:none;border:1px solid var(--green);color:var(--green);cursor:pointer;">+ Log Today's Progress</button>
-    <button onclick="resetProgress()" style="font-family:var(--ui);font-size:8px;letter-spacing:2px;text-transform:uppercase;padding:8px 14px;background:none;border:1px solid var(--border-hi);color:var(--muted);cursor:pointer;">Reset</button>
-  </div>
-</div>
-
-<!-- TIERS -->
-<section id="tiers" style="background:var(--panel);border-bottom:1px solid var(--border);">
-  <div class="stag">Choose Your Path</div>
-  <h2 class="sh">THREE <span class="g">TIERS.</span><br>ONE <span class="r">MONSTER.</span></h2>
-  <p class="ssub">Same 147 days. Same 7 phases. Your tier determines how deep you go and which milestone you hit at each gate.</p>
-
-  <!-- MOBILE: tab selector + panels -->
-  <div class="tier-selector">
-    <button class="tier-btn active-std" onclick="switchTier('std',this)">Standard</button>
-    <button class="tier-btn" onclick="switchTier('adv',this)">Advanced</button>
-    <button class="tier-btn" onclick="switchTier('mon',this)">⬡ Monster</button>
-  </div>
-  <div class="tier-panels">
-    <div class="tier-panel active" id="tier-std">
-      <div class="tier-name-big">STANDARD</div>
-      <div class="tier-body">Starting from zero. 7 phases, 3 cloud certs, 7 deployed applications. You finish job-ready at mid-market AI companies. The right path if you've never written a line of code.</div>
-      <div class="tier-ms-list">
-        <div class="tier-ms std">Azure AI-900 cert by Day 21</div>
-        <div class="tier-ms std">Live ML app deployed by Day 42</div>
-        <div class="tier-ms std">NVIDIA NCA-AIIO cert by Day 63</div>
-        <div class="tier-ms std">Mini-LLM trained & deployed by Day 84</div>
-        <div class="tier-ms std">AWS ML Specialty cert by Day 105</div>
-        <div class="tier-ms std">Autonomous agent deployed by Day 126</div>
-        <div class="tier-ms std">Azure AI-102 + 10 applications by Day 147</div>
-      </div>
-    </div>
-    <div class="tier-panel t-adv" id="tier-adv">
-      <div class="tier-name-big">ADVANCED</div>
-      <div class="tier-body">Everything in Standard, plus research paper implementations, a published HuggingFace model with eval results, and an open-source contribution merged to a major repo. Frontier lab interviews are the target.</div>
-      <div class="tier-ms-list">
-        <div class="tier-ms adv">All Standard milestones</div>
-        <div class="tier-ms adv">Implement one research paper per phase</div>
-        <div class="tier-ms adv">Public HuggingFace model with eval results</div>
-        <div class="tier-ms adv">Open-source PR merged to a major repo</div>
-        <div class="tier-ms adv">3 published technical deep-dive blog posts</div>
-        <div class="tier-ms adv">Google Professional ML Engineer cert</div>
-        <div class="tier-ms adv">Apply to Anthropic, OpenAI, Mistral by Day 147</div>
-      </div>
-    </div>
-    <div class="tier-panel t-mon" id="tier-mon">
-      <div class="tier-name-big mon">MONSTER</div>
-      <div class="tier-body">Everything in Advanced plus: pre-train a 125M+ parameter LLM from scratch, publish original research to arXiv, launch a live AI product with real users. Not survivable by most. That is the point.</div>
-      <div class="tier-ms-list">
-        <div class="tier-ms mon">All Advanced milestones</div>
-        <div class="tier-ms mon">Pre-train a 125M+ parameter model from scratch</div>
-        <div class="tier-ms mon">Multi-modal system (vision + language)</div>
-        <div class="tier-ms mon">Original paper published to arXiv</div>
-        <div class="tier-ms mon">NVIDIA NCA-GENL + NCA-GENM certs</div>
-        <div class="tier-ms mon">Live AI product with documented real users</div>
-        <div class="tier-ms mon">Apply to AI research scientist roles</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- DESKTOP: 3-col grid (hidden on mobile via CSS) -->
-  <div class="tier-intro-desktop" style="display:none;">
-    <div class="tier-card-d"><div class="tier-tag-d std">// Tier 01</div><div class="tier-name-d">STANDARD</div><div class="tier-body-d">Starting from zero. 7 phases, 3 cloud certs, 7 deployed apps. Job-ready at mid-market AI companies.</div><div class="tier-ms-list"><div class="tier-ms std">Azure AI-900 cert by Day 21</div><div class="tier-ms std">Live ML app by Day 42</div><div class="tier-ms std">NVIDIA NCA-AIIO by Day 63</div><div class="tier-ms std">Mini-LLM deployed by Day 84</div><div class="tier-ms std">AWS ML Specialty by Day 105</div><div class="tier-ms std">Agent deployed by Day 126</div><div class="tier-ms std">Azure AI-102 + 10 apps by Day 147</div></div></div>
-    <div class="tier-card-d t-adv"><div class="tier-tag-d adv">// Tier 02</div><div class="tier-name-d">ADVANCED</div><div class="tier-body-d">Everything in Standard plus research papers, HuggingFace model, open-source contribution. Frontier lab target.</div><div class="tier-ms-list"><div class="tier-ms adv">All Standard milestones</div><div class="tier-ms adv">One research paper per phase</div><div class="tier-ms adv">Published HF model with evals</div><div class="tier-ms adv">Open-source PR merged</div><div class="tier-ms adv">Google PMLE cert</div><div class="tier-ms adv">Apply to Anthropic, OpenAI, Mistral</div></div></div>
-    <div class="tier-card-d t-mon"><div class="tier-tag-d mon">// Tier 03</div><div class="tier-name-d mon">MONSTER</div><div class="tier-body-d">Pre-train a 125M+ LLM from scratch. Publish to arXiv. Launch a live product with real users. Not for everyone.</div><div class="tier-ms-list"><div class="tier-ms mon">All Advanced milestones</div><div class="tier-ms mon">125M+ model pre-trained</div><div class="tier-ms mon">arXiv paper published</div><div class="tier-ms mon">Live product with real users</div><div class="tier-ms mon">NVIDIA NCA-GENL + GENM</div></div></div>
+    <p class="mission-sub">
+      AI built by people who care about people is the difference between technology that extracts value and technology that creates it. Every person who completes this challenge is one more person capable of making something better — for a community, a family, a stranger, a problem that has been waiting too long for someone with the right tools to arrive.
+    </p>
   </div>
 </section>
 
-<!-- PHASES -->
-<section id="phases">
-  <div class="stag">7 Phases // 21 Days Each</div>
-  <h2 class="sh">THE <span class="g">GAUNTLET</span></h2>
-  <p class="ssub">Each phase ends with a mandatory milestone. Tap "Start Here" inside any phase for step-by-step guidance, curated links, and exactly what to do on Day 1.</p>
+<!-- JOURNEY -->
+<section class="journey" id="journey">
+  <div class="wrap">
+    <div class="section-eyebrow">The 150-Day Journey</div>
+    <h2 class="journey-h">7 PHASES.<br><span class="r">ZERO SHORTCUTS.</span></h2>
+    <p class="journey-sub">Each phase is 21 days. Each phase ends with a verifiable milestone — a certification number or a deployed URL. Miss it and you restart that phase. No extensions. No partial credit.</p>
 
-  <div class="phase-list">
+    <div class="phases">
 
-    <!-- PHASE 1 -->
-    <div class="phase">
-      <div class="phase-top">
-        <div class="phase-num">01</div>
-        <div class="phase-meta">
-          <div class="phase-days">Days 1–21</div>
-          <div class="phase-title">IGNITION — Python & Math Core</div>
+      <div class="ph reveal">
+        <div class="ph-num">01</div>
+        <div class="ph-body">
+          <div class="ph-days">Days 1–21</div>
+          <div class="ph-title">IGNITION — Harvard CS50 AI + Python</div>
+          <div class="ph-desc">Complete all 14 Harvard CS50 AI projects — BFS, Minimax, Bayesian Networks, CNNs, BERT — while learning Python from scratch. Two certifications by Day 21.</div>
+        </div>
+        <div class="ph-ms">
+          <div class="ms-badge">⬡ Harvard Cert</div>
+          <div class="ms-title">CS50 AI Certificate +<br>Azure AI-900</div>
         </div>
       </div>
-      <div class="phase-body">
-        <p class="phase-desc">Start from zero. Python fundamentals, NumPy, Pandas, linear algebra, calculus intuition. GitHub commit every single day. By Day 21 you can write functions, manipulate data, and reason about the math behind every AI model.</p>
-        <div class="tags"><span class="tag-pill">Python</span><span class="tag-pill">NumPy</span><span class="tag-pill">Pandas</span><span class="tag-pill">Linear Algebra</span><span class="tag-pill">Git & CLI</span><span class="tag-pill">Matplotlib</span></div>
-      </div>
-      <div class="ms-box">
-        <div class="ms-label">Day 21 Milestone</div>
-        <div class="ms-badge badge-cert">⬡ Azure AI-900</div>
-        <div class="ms-title">Microsoft Azure AI Fundamentals</div>
-        <div class="ms-verify">Pass the AI-900 exam. Credential number is your proof. ~$165. Miss it — restart Phase 01.</div>
-      </div>
-      <button class="guide-toggle" onclick="toggleGuide(this)">
-        <span>▶ Start Here — Day-by-Day Guide for Beginners</span>
-        <span class="arrow">▼</span>
-      </button>
-      <div class="guide-drawer">
-        <div class="guide-inner">
-          <div class="guide-day">
-            <div class="guide-day-label">Week 1 // Days 1–7</div>
-            <div class="guide-day-title">Install everything. Write your first code.</div>
-            <div class="guide-day-text">Before you learn AI you need Python. Before Python you need a place to write it. Start here — these three resources in this order. Do not skip ahead.</div>
-            <div class="guide-links">
-              <a href="https://cs50.harvard.edu/x" target="_blank" class="guide-link">
-                <div class="guide-link-icon">🎓</div>
-                <div class="guide-link-body">
-                  <div class="guide-link-name">HarvardX CS50x — Week 0</div>
-                  <div class="guide-link-desc">Start here. Free. Watch Week 0 lecture then open Scratch. It's not coding yet — it's thinking like a programmer. Takes 2–3 hours.</div>
-                </div>
-              </a>
-              <a href="https://code.visualstudio.com/download" target="_blank" class="guide-link">
-                <div class="guide-link-icon">💻</div>
-                <div class="guide-link-body">
-                  <div class="guide-link-name">VS Code — Download & Install</div>
-                  <div class="guide-link-desc">Your code editor. Free. Download, install, open it. This is where you will write every line of code for the next 147 days.</div>
-                </div>
-              </a>
-              <a href="https://www.python.org/downloads/" target="_blank" class="guide-link">
-                <div class="guide-link-icon">🐍</div>
-                <div class="guide-link-body">
-                  <div class="guide-link-name">Python — Download & Install</div>
-                  <div class="guide-link-desc">Install Python 3.11 or later. Then open VS Code, create a file called hello.py, type print("hello") and run it. That's your first program.</div>
-                </div>
-              </a>
-            </div>
-            <span class="guide-done">✓ Done when: hello.py runs and prints something.</span>
-          </div>
-          <div class="guide-day">
-            <div class="guide-day-label">Week 2 // Days 8–14</div>
-            <div class="guide-day-title">Learn Python properly. Push to GitHub daily.</div>
-            <div class="guide-day-text">Now you learn the language. Functions, loops, lists, dictionaries. And you set up GitHub so your daily commits are public from Day 1.</div>
-            <div class="guide-links">
-              <a href="https://cs50.harvard.edu/x" target="_blank" class="guide-link">
-                <div class="guide-link-icon">🎓</div>
-                <div class="guide-link-body">
-                  <div class="guide-link-name">CS50x — Week 1 (C) + Week 6 (Python)</div>
-                  <div class="guide-link-desc">Do Week 1 for logic, then jump to Week 6 for Python. Complete at least 2 problem sets. These are harder than they look — that's the point.</div>
-                </div>
-              </a>
-              <a href="https://github.com" target="_blank" class="guide-link">
-                <div class="guide-link-icon">🐙</div>
-                <div class="guide-link-body">
-                  <div class="guide-link-name">GitHub — Create Account & First Repo</div>
-                  <div class="guide-link-desc">Create a free account. Make a repo called "nullvector-journey". Push your hello.py. From today, one commit per day minimum. This is your public record.</div>
-                </div>
-              </a>
-            </div>
-            <span class="guide-done">✓ Done when: GitHub shows green squares. Your repo is public.</span>
-          </div>
-          <div class="guide-day">
-            <div class="guide-day-label">Week 3 // Days 15–21</div>
-            <div class="guide-day-title">Math for AI. Study for Azure AI-900.</div>
-            <div class="guide-day-text">The math behind AI sounds scary. It isn't. You need intuition, not a PhD. These resources build exactly that. Simultaneously study for your first cert — it's achievable in one week of focused prep.</div>
-            <div class="guide-links">
-              <a href="https://www.3blue1brown.com/topics/linear-algebra" target="_blank" class="guide-link">
-                <div class="guide-link-icon">📐</div>
-                <div class="guide-link-body">
-                  <div class="guide-link-name">3Blue1Brown — Essence of Linear Algebra</div>
-                  <div class="guide-link-desc">The best math visualization channel on the internet. Watch the entire linear algebra series (15 videos, ~3hrs). You will understand vectors and matrices in a way no textbook can teach.</div>
-                </div>
-              </a>
-              <a href="https://learn.microsoft.com/en-us/credentials/certifications/azure-ai-fundamentals/" target="_blank" class="guide-link">
-                <div class="guide-link-icon">☁️</div>
-                <div class="guide-link-body">
-                  <div class="guide-link-name">Microsoft AI-900 — Free Official Study Guide</div>
-                  <div class="guide-link-desc">Microsoft's own free learning path for the exam. Do all 5 modules. Takes about 8 hours. Book the exam for Day 21. ~$165. Your Humble Bundle courses have extra practice tests.</div>
-                </div>
-              </a>
-            </div>
-            <span class="guide-done">✓ Done when: AI-900 exam passed. Credential number in your GitHub README.</span>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- PHASE 2 -->
-    <div class="phase">
-      <div class="phase-top">
-        <div class="phase-num">02</div>
-        <div class="phase-meta">
-          <div class="phase-days">Days 22–42</div>
-          <div class="phase-title">SIGNAL — Classical Machine Learning</div>
+      <div class="ph reveal">
+        <div class="ph-num">02</div>
+        <div class="ph-body">
+          <div class="ph-days">Days 22–42</div>
+          <div class="ph-title">SIGNAL — Classical Machine Learning</div>
+          <div class="ph-desc">Scikit-Learn, PyTorch, gradient descent from scratch, 5 ML models. No black boxes — every parameter has a reason. Phase ends with a live deployed web application.</div>
+        </div>
+        <div class="ph-ms">
+          <div class="ms-badge deploy">⬡ Live App</div>
+          <div class="ms-title">Deployed ML Classifier<br>on HuggingFace Spaces</div>
         </div>
       </div>
-      <div class="phase-body">
-        <p class="phase-desc">Supervised and unsupervised learning, gradient descent, Scikit-Learn, first PyTorch models. Build 5 ML models from scratch. Every parameter has a reason. Phase ends with a working public web application — not a notebook.</p>
-        <div class="tags"><span class="tag-pill">Scikit-Learn</span><span class="tag-pill">PyTorch Intro</span><span class="tag-pill">Regression</span><span class="tag-pill">Classification</span><span class="tag-pill">Gradient Descent</span><span class="tag-pill">HuggingFace Spaces</span></div>
-      </div>
-      <div class="ms-box">
-        <div class="ms-label">Day 42 Milestone</div>
-        <div class="ms-badge badge-deploy">⬡ Live ML App</div>
-        <div class="ms-title">Deployed ML Classifier</div>
-        <div class="ms-verify">Working ML app on HuggingFace Spaces. Public URL. Real input, real predictions. Not a notebook — a product anyone can use right now.</div>
-      </div>
-      <button class="guide-toggle" onclick="toggleGuide(this)">
-        <span>▶ Start Here — Day-by-Day Guide for Beginners</span>
-        <span class="arrow">▼</span>
-      </button>
-      <div class="guide-drawer">
-        <div class="guide-inner">
-          <div class="guide-day">
-            <div class="guide-day-label">Week 1 // Days 22–28</div>
-            <div class="guide-day-title">What is machine learning? Build your first model.</div>
-            <div class="guide-day-text">Machine learning sounds mysterious. It isn't. It's math that finds patterns. You'll understand it by building something immediately.</div>
-            <div class="guide-links">
-              <a href="https://www.coursera.org/specializations/machine-learning-introduction" target="_blank" class="guide-link">
-                <div class="guide-link-icon">🎓</div>
-                <div class="guide-link-body">
-                  <div class="guide-link-name">Andrew Ng — Machine Learning Specialization (Coursera)</div>
-                  <div class="guide-link-desc">The gold standard ML course. Audit for free. Start Week 1 immediately. Every video is followed by 30 minutes of coding what you just watched.</div>
-                </div>
-              </a>
-              <a href="https://scikit-learn.org/stable/getting_started.html" target="_blank" class="guide-link">
-                <div class="guide-link-icon">🔧</div>
-                <div class="guide-link-body">
-                  <div class="guide-link-name">Scikit-Learn — Getting Started Guide</div>
-                  <div class="guide-link-desc">Official tutorial. Build your first classifier in 20 minutes. Real code, real model. Do this on Day 22 — today, before bed.</div>
-                </div>
-              </a>
-            </div>
-            <span class="guide-done">✓ Done when: You've trained a classifier that predicts something on real data.</span>
-          </div>
-          <div class="guide-day">
-            <div class="guide-day-label">Weeks 2–3 // Days 29–42</div>
-            <div class="guide-day-title">Build 4 more models. Deploy one publicly.</div>
-            <div class="guide-links">
-              <a href="https://course.fast.ai" target="_blank" class="guide-link">
-                <div class="guide-link-icon">⚡</div>
-                <div class="guide-link-body">
-                  <div class="guide-link-name">fast.ai — Practical Deep Learning (Lessons 1–2)</div>
-                  <div class="guide-link-desc">Free. The best hands-on AI course in existence. Lessons 1 and 2 cover building and deploying a real model. Do Lesson 1 now. It deploys a working app by the end.</div>
-                </div>
-              </a>
-              <a href="https://huggingface.co/spaces" target="_blank" class="guide-link">
-                <div class="guide-link-icon">🚀</div>
-                <div class="guide-link-body">
-                  <div class="guide-link-name">HuggingFace Spaces — Free Deployment</div>
-                  <div class="guide-link-desc">Where your app goes live. Free. Create an account. fast.ai Lesson 1 walks you through deploying directly here. Your milestone lives at a URL ending in .hf.space</div>
-                </div>
-              </a>
-            </div>
-            <span class="guide-done">✓ Done when: nullvector.monster/projects links to your live HuggingFace app.</span>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- PHASE 3 -->
-    <div class="phase">
-      <div class="phase-top">
-        <div class="phase-num">03</div>
-        <div class="phase-meta">
-          <div class="phase-days">Days 43–63</div>
-          <div class="phase-title">DEPTH — Deep Learning & Neural Networks</div>
+      <div class="ph reveal">
+        <div class="ph-num">03</div>
+        <div class="ph-body">
+          <div class="ph-days">Days 43–63</div>
+          <div class="ph-title">DEPTH — Deep Learning</div>
+          <div class="ph-desc">CNNs, RNNs, backpropagation derived by hand. fast.ai parallel track. GPU training. By Day 63 you can explain why model architecture decisions matter — and defend yours.</div>
+        </div>
+        <div class="ph-ms">
+          <div class="ms-badge">⬡ NVIDIA Cert</div>
+          <div class="ms-title">NVIDIA Certified<br>Associate: AI Infrastructure</div>
         </div>
       </div>
-      <div class="phase-body">
-        <p class="phase-desc">CNNs, RNNs, LSTMs. Backpropagation by hand — you derive the gradients before using autograd. fast.ai runs parallel. GPU training, debugging. By Day 63 you understand why model size matters and can explain it to anyone.</p>
-        <div class="tags"><span class="tag-pill">PyTorch Advanced</span><span class="tag-pill">CNNs</span><span class="tag-pill">RNNs</span><span class="tag-pill">fast.ai</span><span class="tag-pill">GPU Training</span><span class="tag-pill">Backprop from Scratch</span></div>
-      </div>
-      <div class="ms-box">
-        <div class="ms-label">Day 63 Milestone</div>
-        <div class="ms-badge badge-cert">⬡ NVIDIA NCA-AIIO</div>
-        <div class="ms-title">NVIDIA AI Infrastructure Cert</div>
-        <div class="ms-verify">Pass NVIDIA Certified Associate: AI Infrastructure & Operations. Validates GPU compute and deep learning infrastructure knowledge. Global hardware credential.</div>
-      </div>
-      <button class="guide-toggle" onclick="toggleGuide(this)">
-        <span>▶ Start Here — Day-by-Day Guide for Beginners</span>
-        <span class="arrow">▼</span>
-      </button>
-      <div class="guide-drawer">
-        <div class="guide-inner">
-          <div class="guide-day">
-            <div class="guide-day-label">Week 1 // Days 43–49</div>
-            <div class="guide-day-title">Neural networks from the ground up.</div>
-            <div class="guide-links">
-              <a href="https://course.fast.ai" target="_blank" class="guide-link">
-                <div class="guide-link-icon">⚡</div>
-                <div class="guide-link-body">
-                  <div class="guide-link-name">fast.ai — Lessons 3–5</div>
-                  <div class="guide-link-desc">Continue where Phase 2 left off. Lessons 3–5 cover neural net foundations, training loops, and why things go wrong. Do one lesson per week alongside your own experiments.</div>
-                </div>
-              </a>
-              <a href="https://www.youtube.com/watch?v=aircAruvnKk" target="_blank" class="guide-link">
-                <div class="guide-link-icon">🎥</div>
-                <div class="guide-link-body">
-                  <div class="guide-link-name">3Blue1Brown — Neural Networks Series</div>
-                  <div class="guide-link-desc">4 videos, ~1 hour total. The clearest visual explanation of how neural networks actually work that exists anywhere. Watch before writing any PyTorch code this phase.</div>
-                </div>
-              </a>
-              <a href="https://learn.nvidia.com/en-us/training/self-paced-courses" target="_blank" class="guide-link">
-                <div class="guide-link-icon">⬡</div>
-                <div class="guide-link-body">
-                  <div class="guide-link-name">NVIDIA Deep Learning Institute — Free Courses</div>
-                  <div class="guide-link-desc">Start the NCA-AIIO cert prep here. NVIDIA's own free learning portal. The "Fundamentals of Deep Learning" course maps directly to the exam. Begin this in Week 1 of Phase 3.</div>
-                </div>
-              </a>
-            </div>
-            <span class="guide-done">✓ Done when: You've trained a CNN on image data and can explain what each layer does.</span>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- PHASE 4 -->
-    <div class="phase">
-      <div class="phase-top">
-        <div class="phase-num">04</div>
-        <div class="phase-meta">
-          <div class="phase-days">Days 64–84</div>
-          <div class="phase-title">TRANSFORMER — Attention & LLM Architecture</div>
+      <div class="ph reveal">
+        <div class="ph-num">04</div>
+        <div class="ph-body">
+          <div class="ph-days">Days 64–84</div>
+          <div class="ph-title">TRANSFORMER — LLM Architecture</div>
+          <div class="ph-desc">Read Attention Is All You Need. Implement multi-head self-attention from scratch. Build and deploy a mini-GPT trained on real text. The hardest phase. The most important one.</div>
+        </div>
+        <div class="ph-ms">
+          <div class="ms-badge deploy">⬡ Live LLM</div>
+          <div class="ms-title">Trained Language Model<br>Deployed Publicly</div>
         </div>
       </div>
-      <div class="phase-body">
-        <p class="phase-desc">You read "Attention Is All You Need." You implement multi-head self-attention from scratch. You build a mini-GPT that trains on real text. The hardest phase. The most important one. This is where AI users become AI builders.</p>
-        <div class="tags"><span class="tag-pill">Attention Mechanism</span><span class="tag-pill">Transformer Paper</span><span class="tag-pill">HuggingFace</span><span class="tag-pill">Tokenization</span><span class="tag-pill">Mini-GPT Build</span><span class="tag-pill">CS224N</span></div>
-      </div>
-      <div class="ms-box">
-        <div class="ms-label">Day 84 Milestone</div>
-        <div class="ms-badge badge-build">⬡ Working Mini-LLM</div>
-        <div class="ms-title">Train & Deploy a Language Model</div>
-        <div class="ms-verify">Small transformer trained on custom data, generating coherent text, deployed as a public demo. Your code, your weights — no frameworks hiding the architecture.</div>
-      </div>
-      <button class="guide-toggle" onclick="toggleGuide(this)">
-        <span>▶ Start Here — Day-by-Day Guide for Beginners</span>
-        <span class="arrow">▼</span>
-      </button>
-      <div class="guide-drawer">
-        <div class="guide-inner">
-          <div class="guide-day">
-            <div class="guide-day-label">Days 64–70</div>
-            <div class="guide-day-title">Read the paper. Understand attention.</div>
-            <div class="guide-links">
-              <a href="https://arxiv.org/abs/1706.03762" target="_blank" class="guide-link">
-                <div class="guide-link-icon">📄</div>
-                <div class="guide-link-body">
-                  <div class="guide-link-name">Attention Is All You Need — Original Paper</div>
-                  <div class="guide-link-desc">Read it. Yes, you. Don't skip. You won't understand everything — that's fine. Read it twice. The second time make notes. This paper is why everything in modern AI exists.</div>
-                </div>
-              </a>
-              <a href="https://www.youtube.com/playlist?list=PLoROMvodv4rMFqRtEuo6SGjY4XbRIVx76" target="_blank" class="guide-link">
-                <div class="guide-link-icon">🎓</div>
-                <div class="guide-link-body">
-                  <div class="guide-link-name">Stanford CS224N — NLP with Deep Learning</div>
-                  <div class="guide-link-desc">Free on YouTube. Graduate-level but publicly available. Watch Lectures 1–5 this week. The attention and transformer lectures are the most important things you will watch this entire challenge.</div>
-                </div>
-              </a>
-              <a href="https://github.com/karpathy/nanoGPT" target="_blank" class="guide-link">
-                <div class="guide-link-icon">⚡</div>
-                <div class="guide-link-body">
-                  <div class="guide-link-name">Andrej Karpathy — nanoGPT (GitHub)</div>
-                  <div class="guide-link-desc">The cleanest GPT implementation in existence. Read every line. Then rebuild it yourself without looking. This is your Phase 4 project. Karpathy's YouTube tutorial walks through it — watch "Let's build GPT from scratch."</div>
-                </div>
-              </a>
-            </div>
-            <span class="guide-done">✓ Done when: Your mini-GPT generates text and is deployed at a public URL.</span>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- PHASE 5 -->
-    <div class="phase">
-      <div class="phase-top">
-        <div class="phase-num">05</div>
-        <div class="phase-meta">
-          <div class="phase-days">Days 85–105</div>
-          <div class="phase-title">OPERATOR — Fine-Tuning, RAG & Production LLMs</div>
+      <div class="ph reveal">
+        <div class="ph-num">05</div>
+        <div class="ph-body">
+          <div class="ph-days">Days 85–105</div>
+          <div class="ph-title">OPERATOR — Fine-Tuning & RAG</div>
+          <div class="ph-desc">LoRA, QLoRA, DPO, RLHF fundamentals. RAG pipelines with LlamaIndex. Fine-tune an open-source LLM on custom data. Two production deployments. AWS ML Specialty.</div>
+        </div>
+        <div class="ph-ms">
+          <div class="ms-badge">⬡ AWS Cert</div>
+          <div class="ms-title">AWS ML Specialty<br>MLS-C01</div>
         </div>
       </div>
-      <div class="phase-body">
-        <p class="phase-desc">LoRA, QLoRA, instruction tuning, DPO, RLHF fundamentals. RAG pipelines with LlamaIndex and vector databases. Fine-tune an open-source LLM on custom data. Build a RAG system with measurable retrieval accuracy. Two production deployments.</p>
-        <div class="tags"><span class="tag-pill">LoRA / QLoRA</span><span class="tag-pill">Fine-Tuning</span><span class="tag-pill">DPO</span><span class="tag-pill">RAG</span><span class="tag-pill">LlamaIndex</span><span class="tag-pill">Vector DBs</span></div>
-      </div>
-      <div class="ms-box">
-        <div class="ms-label">Day 105 Milestone</div>
-        <div class="ms-badge badge-cert">⬡ AWS MLS-C01</div>
-        <div class="ms-title">AWS ML Specialty Cert</div>
-        <div class="ms-verify">The most employable ML cert on the market. Covers modeling, ML implementation, AWS AI services. ~$300. Non-negotiable milestone.</div>
-      </div>
-      <button class="guide-toggle" onclick="toggleGuide(this)">
-        <span>▶ Start Here — Day-by-Day Guide for Beginners</span>
-        <span class="arrow">▼</span>
-      </button>
-      <div class="guide-drawer">
-        <div class="guide-inner">
-          <div class="guide-day">
-            <div class="guide-day-label">Days 85–91</div>
-            <div class="guide-day-title">Fine-tune your first real LLM.</div>
-            <div class="guide-links">
-              <a href="https://huggingface.co/docs/transformers/training" target="_blank" class="guide-link">
-                <div class="guide-link-icon">🤗</div>
-                <div class="guide-link-body">
-                  <div class="guide-link-name">HuggingFace — Fine-Tuning Guide</div>
-                  <div class="guide-link-desc">Official docs for fine-tuning. Start with a small model like GPT-2 or DistilBERT on a custom dataset. This is the foundation of every production LLM application.</div>
-                </div>
-              </a>
-              <a href="https://docs.llamaindex.ai/en/stable/" target="_blank" class="guide-link">
-                <div class="guide-link-icon">🦙</div>
-                <div class="guide-link-body">
-                  <div class="guide-link-name">LlamaIndex — Getting Started</div>
-                  <div class="guide-link-desc">The tool that gives LLMs memory. Build a RAG system that answers questions from your own documents. Start the 5-minute quickstart on Day 85 — you'll have a working system before dinner.</div>
-                </div>
-              </a>
-              <a href="https://explore.skillbuilder.aws/learn/public/learning_plan/view/28/machine-learning-learning-plan" target="_blank" class="guide-link">
-                <div class="guide-link-icon">☁️</div>
-                <div class="guide-link-body">
-                  <div class="guide-link-name">AWS Skill Builder — ML Learning Plan (Free)</div>
-                  <div class="guide-link-desc">AWS's own free MLS-C01 prep path. 40+ hours of content. Start this in Week 1 of Phase 5 and study 1 hour per day alongside your builds. Your Humble Bundle AWS course covers the rest.</div>
-                </div>
-              </a>
-            </div>
-            <span class="guide-done">✓ Done when: AWS MLS-C01 passed. Credential in your GitHub README.</span>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- PHASE 6 -->
-    <div class="phase">
-      <div class="phase-top">
-        <div class="phase-num">06</div>
-        <div class="phase-meta">
-          <div class="phase-days">Days 106–126</div>
-          <div class="phase-title">AGENT — Autonomous AI Systems</div>
+      <div class="ph reveal">
+        <div class="ph-num">06</div>
+        <div class="ph-body">
+          <div class="ph-days">Days 106–126</div>
+          <div class="ph-title">AGENT — Autonomous AI Systems</div>
+          <div class="ph-desc">LangChain, MCP protocol, multi-agent orchestration, n8n automation. Build an autonomous AI agent that completes multi-step tasks without human intervention. Deploy it.</div>
+        </div>
+        <div class="ph-ms">
+          <div class="ms-badge deploy">⬡ Live Agent</div>
+          <div class="ms-title">Autonomous Agent<br>with Public URL</div>
         </div>
       </div>
-      <div class="phase-body">
-        <p class="phase-desc">LangChain agentic loops, tool use, MCP protocol, multi-agent orchestration, n8n automation. Build a fully autonomous AI agent — it browses the web, writes code, manages files, completes multi-step tasks. The fastest-growing specialization in AI hiring.</p>
-        <div class="tags"><span class="tag-pill">LangChain</span><span class="tag-pill">Agentic Loops</span><span class="tag-pill">MCP Protocol</span><span class="tag-pill">Tool Use</span><span class="tag-pill">n8n</span><span class="tag-pill">Multi-Agent</span></div>
-      </div>
-      <div class="ms-box">
-        <div class="ms-label">Day 126 Milestone</div>
-        <div class="ms-badge badge-deploy">⬡ Public Agent App</div>
-        <div class="ms-title">Deployed Autonomous Agent</div>
-        <div class="ms-verify">Live agent with public URL. Real tool use, persistent memory, 3+ integrated tools. GitHub repo with architecture diagram. Demonstrable live in a 5-minute interview.</div>
-      </div>
-      <button class="guide-toggle" onclick="toggleGuide(this)">
-        <span>▶ Start Here — Day-by-Day Guide for Beginners</span>
-        <span class="arrow">▼</span>
-      </button>
-      <div class="guide-drawer">
-        <div class="guide-inner">
-          <div class="guide-day">
-            <div class="guide-day-label">Days 106–112</div>
-            <div class="guide-day-title">Build your first agent in 30 minutes.</div>
-            <div class="guide-links">
-              <a href="https://python.langchain.com/docs/tutorials/agents/" target="_blank" class="guide-link">
-                <div class="guide-link-icon">🔗</div>
-                <div class="guide-link-body">
-                  <div class="guide-link-name">LangChain — Build an Agent (Official Tutorial)</div>
-                  <div class="guide-link-desc">Start here. Build a working agent in 30 minutes. You give it tools — web search, calculator, code execution — and watch it reason through a problem. This will change how you see AI.</div>
-                </div>
-              </a>
-              <a href="https://docs.anthropic.com/en/docs/build-with-claude/tool-use" target="_blank" class="guide-link">
-                <div class="guide-link-icon">◆</div>
-                <div class="guide-link-body">
-                  <div class="guide-link-name">Anthropic — Tool Use & MCP Docs</div>
-                  <div class="guide-link-desc">Claude's tool use documentation. MCP (Model Context Protocol) is the emerging standard for connecting agents to external systems. Your Humble Bundle MCP books cover this in depth — start reading them now.</div>
-                </div>
-              </a>
-              <a href="https://n8n.io/workflows/" target="_blank" class="guide-link">
-                <div class="guide-link-icon">⚡</div>
-                <div class="guide-link-body">
-                  <div class="guide-link-name">n8n — Workflow Templates</div>
-                  <div class="guide-link-desc">Browse the AI agent templates. n8n lets you build visual agentic workflows. Deploy one template, understand how it works, then build your own from scratch.</div>
-                </div>
-              </a>
-            </div>
-            <span class="guide-done">✓ Done when: Your agent completes a multi-step task without you touching anything after the first prompt.</span>
-          </div>
-        </div>
-      </div>
-    </div>
 
-  </div><!-- end phase-list -->
-
-  <!-- MONSTER STRIP -->
-  <div class="monster-strip">
-    <div class="monster-strip-dot"></div>
-    <div>
-      <div class="monster-strip-text">Monster Phase Activated</div>
-      <div class="monster-strip-sub">Phase 07 milestones escalate by tier — Standard, Advanced, and Monster paths diverge here.</div>
-    </div>
-  </div>
-
-  <div class="phase-list" style="margin-top:2px;">
-    <div class="phase monster-phase">
-      <div class="phase-top">
-        <div class="phase-num" style="color:rgba(255,34,68,.15);">07</div>
-        <div class="phase-meta">
-          <div class="phase-days">Days 127–147</div>
-          <div class="phase-title">DEPLOYMENT — MLOps, Portfolio & Job Attack</div>
+      <div class="ph monster reveal">
+        <div class="ph-num">07</div>
+        <div class="ph-body">
+          <div class="ph-days">Days 127–150</div>
+          <div class="ph-title">DEPLOYMENT — MLOps, Portfolio & Job Attack</div>
+          <div class="ph-desc">MLOps, Docker, CI/CD, cloud deployment. Package 7 projects into a portfolio. Write case studies. Record demos. Day 150: send 10 applications to AI companies.</div>
+        </div>
+        <div class="ph-ms">
+          <div class="ms-badge">⬡ Final Cert</div>
+          <div class="ms-title">Azure AI-102 +<br>10 Applications Sent</div>
         </div>
       </div>
-      <div class="phase-body">
-        <p class="phase-desc">MLOps pipelines, Docker, CI/CD for ML, cloud deployment across AWS/Azure/GCP, model monitoring. Package your best projects, write case studies, record demos, execute a structured job campaign. Monster tier adds: pre-training a full model, publishing to arXiv, launching a live product with paying users.</p>
-        <div class="tags"><span class="tag-pill">MLOps</span><span class="tag-pill">Docker</span><span class="tag-pill">CI/CD</span><span class="tag-pill">AWS / Azure / GCP</span><span class="tag-pill">Portfolio</span><span class="tag-pill">Pre-Training</span><span class="tag-pill">arXiv Paper</span></div>
-      </div>
-      <div class="ms-box" style="border-left-color:rgba(255,34,68,.2);">
-        <div class="ms-label" style="color:var(--red);">Day 147 — Monster Milestone</div>
-        <div class="ms-badge badge-monster">⬡ Monster Level</div>
-        <div class="ms-title" style="color:var(--red);">arXiv Paper + Live Product + Azure AI-102</div>
-        <div class="ms-verify" style="color:rgba(255,34,68,.5);">Original research on arXiv. Live AI product with real users. NVIDIA NCA-GENL cert passed. Azure AI-102 passed. 10 applications sent to frontier AI companies.</div>
-      </div>
-      <button class="guide-toggle" onclick="toggleGuide(this)" style="color:var(--red);border-top-color:rgba(255,34,68,.15);">
-        <span>▶ Start Here — Day-by-Day Guide for Beginners</span>
-        <span class="arrow">▼</span>
-      </button>
-      <div class="guide-drawer">
-        <div class="guide-inner">
-          <div class="guide-day">
-            <div class="guide-day-label">Days 127–133</div>
-            <div class="guide-day-title">Productionize everything. Build your portfolio.</div>
-            <div class="guide-links">
-              <a href="https://mlops.community" target="_blank" class="guide-link">
-                <div class="guide-link-icon">⚙️</div>
-                <div class="guide-link-body">
-                  <div class="guide-link-name">MLOps Community — Resources & Guides</div>
-                  <div class="guide-link-desc">The practitioner community for production ML. Read the "MLOps Maturity Model" article first. Then browse case studies of how real companies deploy models at scale.</div>
-                </div>
-              </a>
-              <a href="https://learn.microsoft.com/en-us/credentials/certifications/azure-ai-engineer/" target="_blank" class="guide-link">
-                <div class="guide-link-icon">☁️</div>
-                <div class="guide-link-body">
-                  <div class="guide-link-name">Microsoft AI-102 — Official Study Path</div>
-                  <div class="guide-link-desc">Your final cert. Microsoft's free learning path for AI-102. Complete all modules. Book the exam for Day 145. Your Humble Bundle Azure AI-102 course covers the full exam syllabus.</div>
-                </div>
-              </a>
-              <a href="https://www.levels.fyi/t/machine-learning-engineer" target="_blank" class="guide-link">
-                <div class="guide-link-icon">🎯</div>
-                <div class="guide-link-body">
-                  <div class="guide-link-name">Levels.fyi — ML Engineer Salaries & Companies</div>
-                  <div class="guide-link-desc">Research where to apply on Day 147. Filter by "Machine Learning Engineer" and "AI Engineer." Build your target list of 10 companies. Know what you're worth before you send a single application.</div>
-                </div>
-              </a>
-            </div>
-            <span class="guide-done">✓ Done when: 10 applications sent. Portfolio URL in every application. Azure AI-102 passed.</span>
-          </div>
-        </div>
-      </div>
+
     </div>
   </div>
 </section>
 
-<!-- DAILY PROTOCOL -->
-<div class="daily-strip" id="daily">
-  <div class="stag">Daily Protocol</div>
-  <h2 class="sh" style="margin-bottom:10px;">EVERY DAY.<br><span class="g">NO EXCEPTIONS.</span></h2>
-  <p class="ssub">Three hours minimum. 147 consecutive days. Your log is public. Your streak is visible to everyone.</p>
-  <div class="daily-grid">
-    <div class="dblock"><div class="dtime">60</div><div class="dunit">Min — Study</div><div class="dtitle">Theory Block</div><div class="ddesc">One lecture or chapter. Absorb the concept before touching code. No skimming.</div></div>
-    <div class="dblock"><div class="dtime">90</div><div class="dunit">Min — Build</div><div class="dtitle">Code Block</div><div class="ddesc">Implement what you learned. Every day. One GitHub commit minimum. No exceptions.</div></div>
-    <div class="dblock"><div class="dtime">30</div><div class="dunit">Min — Log</div><div class="dtitle">Log Block</div><div class="ddesc">3–5 sentences on GitHub. What you built. What broke. What you fix tomorrow.</div></div>
-    <div class="dblock"><div class="dtime">3+</div><div class="dunit">Hrs Total</div><div class="dtitle">Minimum</div><div class="ddesc">Monster tier averages 5–6 hours. If 3 hours daily is not possible, choose a different program.</div></div>
-  </div>
-  <div class="term">
-    <div class="tbar"><div class="dot dot-r"></div><div class="dot dot-a"></div><div class="dot dot-g"></div><div class="ttitle">nullvector.monster — status</div></div>
-    <span class="tl"><span class="tp">$</span> <span class="tc">./gauntlet --init --day 001</span></span>
-    <span class="tl"><span class="to tg">✓ Sequence initialized. 147 days remaining.</span></span>
-    <span class="tl"><span class="to">Phase: <span class="tg">01 IGNITION</span> — Python & Math</span></span>
-    <span class="tl"><span class="to ta">⚠ Target: Azure AI-900 in 21 days. Clock running.</span></span>
-    <span class="tl"> </span>
-    <span class="tl"><span class="tp">$</span> <span class="tc">./gauntlet --milestones</span></span>
-    <span class="tl"><span class="to">Day 021 → <span class="tg">Azure AI-900 cert</span></span></span>
-    <span class="tl"><span class="to">Day 042 → <span class="tg">Live ML app deployed</span></span></span>
-    <span class="tl"><span class="to">Day 063 → <span class="tg">NVIDIA NCA-AIIO cert</span></span></span>
-    <span class="tl"><span class="to">Day 084 → <span class="tg">Mini-LLM trained & deployed</span></span></span>
-    <span class="tl"><span class="to">Day 105 → <span class="tg">AWS ML Specialty cert</span></span></span>
-    <span class="tl"><span class="to">Day 126 → <span class="tg">Autonomous agent live</span></span></span>
-    <span class="tl"><span class="to">Day 147 → <span class="tr">Azure AI-102 + arXiv + product + 10 applications</span></span></span>
-    <span class="tl"> </span>
-    <span class="tl"><span class="tp">$</span> <span class="cur"></span></span>
-  </div>
-</div>
-
-<!-- OUTCOMES -->
-<section id="outcomes">
-  <div class="stag">Day 147</div>
-  <h2 class="sh">WHAT YOU <span class="g">OWN</span></h2>
-  <p class="ssub">Not attendance certs. Deployed products and industry credentials any AI hiring manager can verify in 60 seconds.</p>
-  <div class="outcomes-grid">
-    <div class="oc" data-n="1"><div class="oc-label">Standard / Advanced</div><div class="oc-title">5 INDUSTRY CERTS</div><div class="oc-desc">Azure AI-900, NVIDIA NCA-AIIO, AWS ML Specialty, Azure AI-102, HarvardX CS50 AI. The cert stack that makes a recruiter stop scrolling.</div></div>
-    <div class="oc" data-n="2"><div class="oc-label">Standard / Advanced</div><div class="oc-title">TRANSFORMER FROM SCRATCH</div><div class="oc-desc">You built and trained a language model without a framework doing the hard parts. Walk an interviewer through your attention implementation line by line. Top 5% of ML candidates.</div></div>
-    <div class="oc" data-n="3"><div class="oc-label">Standard / Advanced</div><div class="oc-title">7 LIVE DEPLOYMENTS</div><div class="oc-desc">Seven production apps with public URLs. ML classifier, deep learning model, mini-LLM, fine-tuned model, RAG system, autonomous agent, MLOps pipeline. Loads before the interview starts.</div></div>
-    <div class="oc" data-n="4"><div class="oc-label">Advanced / Monster</div><div class="oc-title">PUBLISHED HF MODEL</div><div class="oc-desc">A fine-tuned model on HuggingFace with documented eval results and a model card. People can download and use it. Your name on it permanently.</div></div>
-    <div class="oc" data-n="5"><div class="oc-label">Advanced / Monster</div><div class="oc-title">OPEN SOURCE CONTRIBUTOR</div><div class="oc-desc">A merged PR in a major AI repo — HuggingFace Transformers, LangChain, LlamaIndex. Permanent record in a codebase engineers at Anthropic and Google use daily.</div></div>
-    <div class="oc" data-n="6"><div class="oc-label">Advanced / Monster</div><div class="oc-title">GOOGLE PMLE CERT</div><div class="oc-desc">Google Professional ML Engineer — completing your AWS + Azure + GCP cloud trifecta. Rare enough to be a significant hiring differentiator on its own.</div></div>
-  </div>
-  <div class="monster-section-label">
-    <div class="msl-tag">// Monster Level Only</div>
-    <div class="msl-name">MONSTER TIER OUTCOMES</div>
-  </div>
-  <div class="outcomes-grid" style="background:var(--border);">
-    <div class="oc monster-oc" data-n="M1"><div class="oc-label" style="color:var(--red);">Monster</div><div class="oc-title monster-title">PRE-TRAINED LLM</div><div class="oc-desc">A 125M+ parameter model pre-trained from scratch on custom data. Distributed training, data pipeline, full training loop. This is what research engineers do at frontier labs.</div></div>
-    <div class="oc monster-oc" data-n="M2"><div class="oc-label" style="color:var(--red);">Monster</div><div class="oc-title monster-title">ARXIV PAPER</div><div class="oc-desc">Original research submitted to arXiv. A real contribution to the literature — novel technique, architectural variation, or evaluation study. Your name on a paper the field can cite.</div></div>
-    <div class="oc monster-oc" data-n="M3"><div class="oc-label" style="color:var(--red);">Monster</div><div class="oc-title monster-title">LIVE AI PRODUCT</div><div class="oc-desc">Not a demo. A product with real users and ideally revenue. Built on your own model. Deployed infrastructure. A company, or the beginning of one.</div></div>
+<!-- TRANSFORMATION -->
+<section class="transform" id="outcomes">
+  <div class="wrap">
+    <div class="section-eyebrow">The Transformation</div>
+    <h2 class="transform-h">DAY 1 <span style="color:var(--border-dk)">VS</span> DAY <span class="r">150</span></h2>
+    <div class="transform-grid">
+      <div class="tblock before reveal">
+        <div class="tblock-label">Day 1 — Where you start</div>
+        <div class="tblock-item"><span class="bullet">—</span>Never written a line of code</div>
+        <div class="tblock-item"><span class="bullet">—</span>AI is something that happens to you</div>
+        <div class="tblock-item"><span class="bullet">—</span>No certifications</div>
+        <div class="tblock-item"><span class="bullet">—</span>Cannot explain what a neural network does</div>
+        <div class="tblock-item"><span class="bullet">—</span>No public evidence of your skills</div>
+        <div class="tblock-item"><span class="bullet">—</span>No AI company would look at your resume</div>
+      </div>
+      <div class="tblock after reveal">
+        <div class="tblock-label">Day 150 — Where you arrive</div>
+        <div class="tblock-item"><span class="bullet">✓</span>150 consecutive GitHub commits</div>
+        <div class="tblock-item"><span class="bullet">✓</span>Harvard CS50 AI certified</div>
+        <div class="tblock-item"><span class="bullet">✓</span>Azure AI-900, AI-102, AWS ML Specialty, NVIDIA NCA</div>
+        <div class="tblock-item"><span class="bullet">✓</span>Built and deployed a transformer from scratch</div>
+        <div class="tblock-item"><span class="bullet">✓</span>Autonomous AI agent with public URL</div>
+        <div class="tblock-item"><span class="bullet">✓</span>Portfolio of 7 live AI applications</div>
+        <div class="tblock-item"><span class="bullet">✓</span>AI is something you build</div>
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- RULES -->
-<section style="background:var(--panel);border-top:1px solid var(--border);">
-  <div class="stag">The Rules</div>
-  <h2 class="sh">NON-<span class="g">NEGOTIABLE</span></h2>
-  <p class="ssub">Six rules. Rules 3 and 4 are the ones people break. Don't.</p>
-  <div class="rules">
-    <div class="rule"><div class="rn">01</div><div><div class="rt">Code every day</div><div class="rd">One GitHub commit minimum. 147 consecutive days. The streak is the evidence.</div></div></div>
-    <div class="rule"><div class="rn">02</div><div><div class="rt">Build before you watch</div><div class="rd">Every lecture is followed immediately by implementation. Watching is not building.</div></div></div>
-    <div class="rule"><div class="rn">03</div><div><div class="rt">Miss a milestone — restart the phase</div><div class="rd">No milestone = restart that 21-day phase from Day 1. No extensions. No partial credit.</div></div></div>
-    <div class="rule"><div class="rn">04</div><div><div class="rt">Deploy or it didn't happen</div><div class="rd">Every major project must be publicly accessible via URL. A notebook is not a deployment.</div></div></div>
-    <div class="rule"><div class="rn">05</div><div><div class="rt">Log publicly</div><div class="rd">Your daily log lives on your public GitHub. Accountability by visibility is the mechanism.</div></div></div>
-    <div class="rule"><div class="rn">06</div><div><div class="rt">Phases are sequential</div><div class="rd">Phase 04 is not survivable without Phase 03. The sequence is load-bearing. Do not disrupt it.</div></div></div>
+<section class="rules" id="rules">
+  <div class="wrap">
+    <div class="section-eyebrow">How It Works</div>
+    <h2 class="rules-h">YOUR DAILY<br><span class="r">PLAYBOOK</span></h2>
+    <div class="rules-grid">
+      <div class="rule reveal">
+        <div class="rule-n">01</div>
+        <div class="rule-t">Write code every day</div>
+        <div class="rule-d">Even just a few lines. Push it to GitHub. The habit of showing up daily is more important than how much you do on any single day. Small steps compound into big skills.</div>
+      </div>
+      <div class="rule reveal">
+        <div class="rule-n">02</div>
+        <div class="rule-t">Try it before you study it</div>
+        <div class="rule-d">After watching a lecture, close the video and attempt to build what you just saw. Getting it wrong is fine. Trying first is how the concept actually sticks.</div>
+      </div>
+      <div class="rule reveal">
+        <div class="rule-n">03</div>
+        <div class="rule-t">Each phase has a finish line</div>
+        <div class="rule-d">Every 21 days there is a concrete milestone — a certification or a live deployed project. Finish lines keep you moving forward and give you something real to show for your effort.</div>
+      </div>
+      <div class="rule reveal">
+        <div class="rule-n">04</div>
+        <div class="rule-t">Ship something people can use</div>
+        <div class="rule-d">The goal of each phase is a working application anyone can access via a URL — not just code sitting on your laptop. Shipping is what makes it real, and real is what gets you hired.</div>
+      </div>
+      <div class="rule reveal">
+        <div class="rule-n">05</div>
+        <div class="rule-t">Write down what you learned</div>
+        <div class="rule-d">Three sentences a day in a public GitHub journal. What you built, what confused you, what you'll tackle tomorrow. Writing it out cements the learning and builds a record of your growth.</div>
+      </div>
+      <div class="rule reveal">
+        <div class="rule-n">06</div>
+        <div class="rule-t">Use AI to learn, not to skip</div>
+        <div class="rule-d">Claude or ChatGPT are incredible tutors — ask them to explain errors, clarify concepts, and suggest approaches. Just don't ask them to do the work for you. The skills need to live in your hands.</div>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- CTA -->
-<div class="cta" id="start">
-  <div class="stag" style="justify-content:center;margin-bottom:16px;">Begin</div>
-  <h2 class="sh" style="margin-bottom:16px;">START THE<br><span class="g">CHALLENGE</span></h2>
-  <p class="ssub" style="margin:0 auto 28px;text-align:center;">Your Day 1 packet — full 147-day protocol, GitHub journal template, cert schedule, and your complete resource map by phase and tier.</p>
-  <div class="form-row">
-    <input type="email" class="email-in" placeholder="your@email.com" />
-    <a href="#" class="btn-p" style="white-space:nowrap;">Start →</a>
-  </div>
-  <div class="cnote" style="margin-bottom:16px;">// Day 1 packet sent immediately. No spam. Unsubscribe anytime.</div>
-  <div class="tier-pick-row">
-    <div class="tier-pick tp-std">Standard Path</div>
-    <div class="tier-pick tp-adv">Advanced Path</div>
-    <div class="tier-pick tp-mon">⬡ Monster Level</div>
-  </div>
-</div>
+<!-- CTA / PDF DOWNLOADS -->
+<section class="cta-section" id="start">
+  <div class="wrap">
+    <h2 class="cta-h">150 DAYS.<br><span class="r">AI MASTER.</span></h2>
+    <p class="cta-sub">Download your phase curriculum. Every day mapped. Every resource linked. Every milestone defined. No email required.</p>
 
+    <div class="pdf-grid">
+      <a href="nullvector_phase1.pdf" download class="pdf-btn">
+        <div class="pdf-num">01</div>
+        <div class="pdf-info">
+          <div class="pdf-title">IGNITION</div>
+          <div class="pdf-sub">Days 1–21 · Harvard CS50 AI · Azure AI-900 · 21 Days Mapped</div>
+        </div>
+        <div class="pdf-dl">↓ PDF</div>
+      </a>
+      <a href="nullvector_phase2.pdf" download class="pdf-btn">
+        <div class="pdf-num">02</div>
+        <div class="pdf-info">
+          <div class="pdf-title">SIGNAL</div>
+          <div class="pdf-sub">Days 22–42 · Classical ML · Live App Deployed</div>
+        </div>
+        <div class="pdf-dl">↓ PDF</div>
+      </a>
+      <a href="nullvector_phase3.pdf" download class="pdf-btn">
+        <div class="pdf-num">03</div>
+        <div class="pdf-info">
+          <div class="pdf-title">DEPTH</div>
+          <div class="pdf-sub">Days 43–63 · Deep Learning · NVIDIA NCA-AIIO</div>
+        </div>
+        <div class="pdf-dl">↓ PDF</div>
+      </a>
+      <a href="nullvector_phase4.pdf" download class="pdf-btn">
+        <div class="pdf-num">04</div>
+        <div class="pdf-info">
+          <div class="pdf-title">TRANSFORMER</div>
+          <div class="pdf-sub">Days 64–84 · Build an LLM from Scratch · Deploy It</div>
+        </div>
+        <div class="pdf-dl">↓ PDF</div>
+      </a>
+      <a href="nullvector_phase5.pdf" download class="pdf-btn">
+        <div class="pdf-num">05</div>
+        <div class="pdf-info">
+          <div class="pdf-title">OPERATOR</div>
+          <div class="pdf-sub">Days 85–105 · Fine-Tuning · RAG · AWS ML Specialty</div>
+        </div>
+        <div class="pdf-dl">↓ PDF</div>
+      </a>
+      <a href="nullvector_phase6.pdf" download class="pdf-btn">
+        <div class="pdf-num">06</div>
+        <div class="pdf-info">
+          <div class="pdf-title">AGENT</div>
+          <div class="pdf-sub">Days 106–126 · Autonomous AI · Live Agent App</div>
+        </div>
+        <div class="pdf-dl">↓ PDF</div>
+      </a>
+      <a href="nullvector_phase7.pdf" download class="pdf-btn monster-phase">
+        <div class="pdf-num">07</div>
+        <div class="pdf-info">
+          <div class="pdf-title">DEPLOYMENT</div>
+          <div class="pdf-sub">Days 127–150 · MLOps · Azure AI-102 · 10 Jobs Applied</div>
+        </div>
+        <div class="pdf-dl">↓ PDF</div>
+      </a>
+    </div>
+    <div class="cta-note">// All 7 PDFs free · No sign-up required · Start Day 1 today</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
 <footer>
-  <div class="fl">NULLVECTOR<span class="tld">.monster</span></div>
-  <div class="fc">© 2026 // 147-Day AI Gauntlet</div>
-  <div class="flinks">
+  <div class="footer-logo">NULLVECTOR<span class="tld">.monster</span></div>
+  <div class="footer-copy">© 2026 // 150-Day AI Challenge</div>
+  <div class="footer-links">
     <a href="#">GitHub</a>
     <a href="#">Discord</a>
-    <a href="#">Protocol</a>
+    <a href="#start">Curriculum</a>
   </div>
 </footer>
 
 <script>
-// ── GUIDE DRAWERS ──
-function toggleGuide(btn) {
-  btn.classList.toggle('open');
-  const drawer = btn.nextElementSibling;
-  drawer.classList.toggle('open');
-}
-
-// ── TIER SWITCHER (mobile) ──
-function switchTier(tier, btn) {
-  document.querySelectorAll('.tier-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tier-btn').forEach(b => {
-    b.classList.remove('active-std','active-adv','active-mon');
-  });
-  document.getElementById('tier-' + tier).classList.add('active');
-  btn.classList.add('active-' + tier);
-}
-
-// ── DESKTOP TIER GRID (show/hide) ──
-function handleResize() {
-  const desktop = document.querySelector('.tier-intro-desktop');
-  const mobileUI = document.querySelector('.tier-selector');
-  const panels = document.querySelector('.tier-panels');
-  if (window.innerWidth >= 1024) {
-    desktop.style.display = 'grid';
-    mobileUI.style.display = 'none';
-    panels.style.display = 'none';
-  } else {
-    desktop.style.display = 'none';
-    mobileUI.style.display = 'flex';
-    panels.style.display = 'block';
-  }
-}
-window.addEventListener('resize', handleResize);
-handleResize();
-
-// ── GAMIFICATION ──
-const PHASES = [
-  { day: 0,  label: 'LEVEL 0 — UNINITIALIZED', next: 'Start Day 1 to begin' },
-  { day: 1,  label: 'LEVEL 1 — IGNITION', next: 'Azure AI-900 cert by Day 21' },
-  { day: 21, label: 'LEVEL 2 — SIGNAL', next: 'Deploy ML app by Day 42' },
-  { day: 42, label: 'LEVEL 3 — DEPTH', next: 'NVIDIA NCA-AIIO by Day 63' },
-  { day: 63, label: 'LEVEL 4 — TRANSFORMER', next: 'Mini-LLM deployed by Day 84' },
-  { day: 84, label: 'LEVEL 5 — OPERATOR', next: 'AWS ML Specialty by Day 105' },
-  { day: 105,label: 'LEVEL 6 — AGENT', next: 'Autonomous agent by Day 126' },
-  { day: 126,label: 'LEVEL 7 — DEPLOYMENT', next: 'Azure AI-102 + 10 apps by Day 147' },
-  { day: 147,label: '☠ MONSTER COMPLETE', next: 'You made it. Now go change something.' },
-];
-const BADGE_DAYS = [1,21,42,63,84,105,126,147,147,147];
-
-function getState() {
-  return JSON.parse(localStorage.getItem('nv_state') || '{"day":0,"streak":0,"dots":[]}');
-}
-function saveState(s) { localStorage.setItem('nv_state', JSON.stringify(s)); }
-
-function renderXP(state) {
-  const day = state.day;
-  const pct = Math.min((day / 147) * 100, 100);
-  document.getElementById('xp-bar').style.width = pct + '%';
-
-  let phase = PHASES[0];
-  for (let i = PHASES.length - 1; i >= 0; i--) {
-    if (day >= PHASES[i].day) { phase = PHASES[i]; break; }
-  }
-  document.getElementById('xp-level-label').textContent = phase.label;
-  document.getElementById('xp-next-label').textContent = phase.next;
-  document.getElementById('streak-num').textContent = state.streak;
-
-  // badges
-  for (let i = 1; i <= 10; i++) {
-    const b = document.getElementById('b' + i);
-    if (day >= BADGE_DAYS[i-1]) {
-      b.classList.remove('locked');
-      b.classList.add('earned');
-    } else {
-      b.classList.add('locked');
-      b.classList.remove('earned');
-    }
-  }
-
-  // streak dots
-  const dots = document.getElementById('streak-dots');
-  dots.innerHTML = '';
-  const arr = state.dots || [];
-  for (let i = 0; i < 30; i++) {
-    const d = document.createElement('div');
-    d.className = 'sdot';
-    if (i < arr.length) {
-      if (arr[i] === 2) d.classList.add('today');
-      else if (arr[i] === 1) d.classList.add('done');
-    }
-    dots.appendChild(d);
-  }
-}
-
-function simulateProgress() {
-  const s = getState();
-  s.day = Math.min(s.day + 7, 147);
-  s.streak = Math.min(s.streak + 7, 147);
-  const dots = s.dots || [];
-  for (let i = 0; i < 7; i++) dots.push(1);
-  dots.push(2);
-  s.dots = dots.slice(-30);
-  saveState(s);
-  renderXP(s);
-}
-
-function resetProgress() {
-  saveState({day:0,streak:0,dots:[]});
-  renderXP({day:0,streak:0,dots:[]});
-}
-
-// scroll animations
 const io = new IntersectionObserver(entries => {
   entries.forEach(e => {
-    if (e.isIntersecting) {
-      e.target.style.opacity = '1';
-      e.target.style.transform = 'translateY(0)';
-    }
+    if (e.isIntersecting) e.target.classList.add('in');
   });
-}, { threshold: 0.05 });
-
-document.querySelectorAll('.phase, .oc, .rule, .dblock, .tier-card-d, .tier-panel').forEach(el => {
-  el.style.opacity = '0';
-  el.style.transform = 'translateY(12px)';
-  el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-  io.observe(el);
-});
-
-// init
-renderXP(getState());
+}, { threshold: 0.06 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 </script>
 </body>
 </html>
